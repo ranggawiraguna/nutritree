@@ -22,7 +22,8 @@ export default styled(Toolbar)(({ theme }) => ({
     minWidth: 'auto',
     minheight: 'auto',
     width: 'auto',
-    height: 'auto'
+    height: 'auto',
+    transform: 'translateY(-7px)'
   },
 
   [theme.breakpoints.only('xs')]: {
