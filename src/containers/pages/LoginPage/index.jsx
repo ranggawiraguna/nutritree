@@ -30,7 +30,7 @@ import { createSession } from 'utils/redux/reducers/account';
 import { BoxTransition } from 'components/elements/MotionTransitions';
 import { useTheme } from '@emotion/react';
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from 'config/firebase';
+import { auth, db } from 'config/database/firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
 
 const DialogForgotPassword = forwardRef(({ open, onClose, showAlert, ...others }, ref) => {

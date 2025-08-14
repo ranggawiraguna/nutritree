@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import DialogEditStaff from 'components/views/DialogActionAuth/EditStaff';
 import DialogAddStaff from 'components/views/DialogActionAuth/AddStaff';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
-import { db, otherAuth } from 'config/firebase';
+import { db, otherAuth } from 'config/database/firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import AlertToast from 'components/elements/AlertToast';
 

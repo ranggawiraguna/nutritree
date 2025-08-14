@@ -24,7 +24,7 @@ import IllustrationProfileChangePassword from 'assets/images/illustration/Profil
 import { useSelector } from 'react-redux';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
-import { auth } from 'config/firebase';
+import { auth } from 'config/database/firebase';
 
 const DialogChangePassword = forwardRef(({ open, onClose, ...others }, ref) => {
   const theme = useTheme();

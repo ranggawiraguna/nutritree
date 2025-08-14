@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { CLEAR_SESSION } from 'utils/redux/action';
 import { useDispatch, useSelector } from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from 'config/firebase';
+import { auth } from 'config/database/firebase';
 import { restoreSession } from 'utils/redux/reducers/account';
 
 export default function AccountManager() {

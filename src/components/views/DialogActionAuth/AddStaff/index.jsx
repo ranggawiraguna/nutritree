@@ -25,9 +25,9 @@ import AlertToast from 'components/elements/AlertToast';
 import { Box } from '@mui/system';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { doc, getDocs, setDoc, query, where, limit, collection } from 'firebase/firestore';
-import { db, otherAuth, storage } from 'config/firebase';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { db, otherAuth } from 'config/database/firebase';
 import { createUserWithEmailAndPassword, deleteUser } from 'firebase/auth';
+import { supabaseStorageUpload, supabaseStorageUrl } from 'config/database/supabase';
 
 const DialogAddStaff = forwardRef(({ open, onClose, ...others }, reference) => {
   const theme = useTheme();
@@ -76,9 +76,13 @@ const DialogAddStaff = forwardRef(({ open, onClose, ...others }, reference) => {
         if ((await getDocs(query(collection(db, "admins"),where("username", "==", inputValues.username),limit(1)))).docs.length === 0) {
           let photoUrl = '';
           if(selectedImage != null){
-            try {
-              const snapshot = await uploadBytes(ref(storage, `/admin-profiles/${inputValues.username}`), selectedImage);
-              photoUrl = await getDownloadURL(snapshot.ref);
+            try {        
+              const response = await supabaseStorageUpload(`/admin-profiles/${inputValues.username}`, selectedImage);
+              if(response.error){
+                throw response.error.message;
+              } else {
+                photoUrl = supabaseStorageUrl(response.data.path);
+              }
             } catch (e) {
               showAlertToast('warning', 'Terjadi kesalahan saat mengupload foto');
             }

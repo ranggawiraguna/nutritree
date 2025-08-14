@@ -22,9 +22,10 @@ import ProfileEditPicture from 'assets/images/icon/ProfileEditPicture.svg';
 import PropTypes from 'prop-types';
 import AlertToast from 'components/elements/AlertToast';
 import { Box } from '@mui/system';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db, storage } from 'config/firebase';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { doc, getDocs, updateDoc, query, collection, where, limit } from 'firebase/firestore';
+import { db } from 'config/database/firebase';
+import { ref } from 'firebase/storage';
+import { supabaseStorageDelete, supabaseStorageUpload, supabaseStorageUrl } from 'config/database/supabase';
 
 const DialogEditStaff = forwardRef(({ open, onClose, data, ...others }, reference) => {
   const theme = useTheme();
@@ -97,34 +98,48 @@ const DialogEditStaff = forwardRef(({ open, onClose, data, ...others }, referenc
       const newData = getValueChanged();
 
       if (Object.keys(data).length > 0) {
+        const handleErrorUpdate = (url) => {
+          supabaseStorageDelete(url);
+          showAlertToast('warning', 'Terjadi kesalahan, silahkan coba kembali');
+          setIsUpdateProcess(false);
+        }
+
         let photoUrl = '';
-        try {
-          const snapshot = await uploadBytes(ref(storage, `/admin-profiles/${data.username}`), selectedImage);
-          photoUrl = await getDownloadURL(snapshot.ref);
+        try {        
+          const response = await supabaseStorageUpload(`/admin-profiles/${data.username}`, selectedImage);
+          if(response.error){
+            throw response.error.message;
+          } else {
+            photoUrl = response.data.path;
+          }
         } catch (e) {
           showAlertToast('warning', 'Terjadi kesalahan saat mengupload foto');
         }
 
-        updateDoc(
-          doc(db, 'admins', data.username),
-          photoUrl
-            ? {
-                ...newData,
-                photoUrl: photoUrl
-              }
-            : newData
-        )
-          .then(() => {
-            showAlertToast('success', 'Berhasil memperbarui informasi admin');
-            setTimeout(() => {
-              setIsUpdateProcess(false);
-              handleCloseUpdate();
-            }, 2000);
-          })
-          .catch(() => {
-            showAlertToast('warning', 'Terjadi kesalahan, silahkan coba kembali');
-            setIsUpdateProcess(false);
-          });
+        const docSnapshot = await getDocs(query(collection(db, "admins"), where("username", "==", data.username), limit(1)));
+
+        if(!docSnapshot.empty){
+          updateDoc(
+            doc(db, 'admins', docSnapshot.docs[0].id),
+            photoUrl
+              ? {
+                  ...newData,
+                  photoUrl: supabaseStorageUrl(photoUrl)
+                }
+              : newData
+          )
+            .then(() => {
+              showAlertToast('success', 'Berhasil memperbarui informasi admin');
+              setTimeout(() => {
+                setIsUpdateProcess(false);
+                handleCloseUpdate();
+              }, 2000);
+            })
+            .catch(() => handleErrorUpdate(photoUrl) );
+        } else {
+            handleErrorUpdate(photoUrl);
+        }
+
       } else {
         showAlertToast('warning', 'Silahkan periksa formulir akun dengan benar');
         setIsUpdateProcess(false);

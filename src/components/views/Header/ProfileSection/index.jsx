@@ -9,7 +9,7 @@ import { MENU_OPEN } from 'utils/redux/action';
 import { useTheme } from '@mui/material/styles';
 import { IconLogout, IconSettings, IconUser } from '@tabler/icons';
 import { signOut } from 'firebase/auth';
-import { auth } from 'config/firebase';
+import { auth } from 'config/database/firebase';
 import {
   Avatar,
   Box,

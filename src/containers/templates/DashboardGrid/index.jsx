@@ -21,7 +21,7 @@ import { useTheme } from '@emotion/react';
 import { reverseTimelineValue, timeline, timelineValues } from 'utils/other/EnvironmentValues';
 import { moneyFormatter } from 'utils/other/Services';
 import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from 'config/firebase';
+import { db } from 'config/database/firebase';
 
 export default function DashboardGrid({ sectionName, itemValues }) {
   const theme = useTheme();

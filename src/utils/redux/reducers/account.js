@@ -1,8 +1,8 @@
 import * as actionTypes from '../action';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, collection, query, where, limit, getDocs, updateDoc } from 'firebase/firestore';
-import { auth, db, storage } from 'config/firebase';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { auth, db } from 'config/database/firebase';
+import { supabaseStorageUpload, supabaseStorageUrl } from 'config/database/supabase';
 
 // Thunk Async Function - RESTORE_SESSION
 export function restoreSession(action) {
@@ -69,12 +69,16 @@ export function updateIdentity(action) {
 
       let result;
       if (action.data['photoUrl']) {
-        try {
-          const snapshot = await uploadBytes(ref(storage, `/admins-profile/${action.username}`), action.data.photoUrl);
-          result = await getDownloadURL(snapshot.ref);
+        try {        
+          const response = await supabaseStorageUpload(`/admin-profiles/${data.username}`, action.data.photoUrl);
+          if(response.error){
+            throw response.error.message;
+          } else {
+            result = supabaseStorageUrl(response.data.path);
+          }
         } catch (e) {
           result = null;
-        }
+        }        
       } else {
         result = ' ';
       }

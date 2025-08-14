@@ -1,13 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { MENU_OPEN } from 'utils/redux/action';
 import { useEffect, useState } from 'react';
+import { collection, limit, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { db } from 'config/database/firebase';
+import { orderProcess, orderType } from 'utils/other/EnvironmentValues';
 import DashboardGrid from 'containers/templates/DashboardGrid';
 import IconBag from 'assets/images/icon/DashboardCardBag.png';
 import IconCoin from 'assets/images/icon/DashboardCardCoin.png';
 import PageRoot from './styled';
-import { collection, limit, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { db } from 'config/firebase';
-import { orderProcess, orderType } from 'utils/other/EnvironmentValues';
 
 export default function DashboardPage() {
   const dispatch = useDispatch();

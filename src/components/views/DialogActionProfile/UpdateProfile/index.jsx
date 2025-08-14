@@ -27,7 +27,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/system';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { updateIdentity } from 'utils/redux/reducers/account';
-import { auth } from 'config/firebase';
+import { auth } from 'config/database/firebase';
 import { EmailAuthProvider, reauthenticateWithCredential, updateEmail } from 'firebase/auth';
 
 const DialogUpdateProfile = forwardRef(({ open, onClose, ...others }, ref) => {
