@@ -17,7 +17,7 @@ export function restoreSession(action) {
       };
     }
 
-    setTimeout(() => { dispatch({ type: actionTypes.RESTORE_SESSION, data: data }) }, 3000);
+    dispatch({ type: actionTypes.RESTORE_SESSION, data: data });
   };
 }
 
@@ -38,7 +38,7 @@ export function createSession(action) {
           signInWithEmailAndPassword(auth, docSnapshot.docs[0].data().email, action.data.password).then((userCredential) => {
             if (userCredential && userCredential.user) {
               action.showAlertToast('success', 'Berhasil Login akun');
-              setTimeout(() => { action.clearLoginForm() }, 3000); 
+             action.clearLoginForm(); 
             }
           });
         } catch (error) {

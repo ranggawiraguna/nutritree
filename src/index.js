@@ -5,6 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from 'utils/redux/store';
 import * as serviceWorker from 'serviceWorker';
+import 'react-perfect-scrollbar/dist/css/styles.css';
 import 'assets/scss/style.scss';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
