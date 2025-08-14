@@ -1,5 +1,5 @@
 import { Route } from 'react-router-dom';
-import GlobalErrorPage from 'containers/pages/GlobalErrorPage';
+import ErrorPage from 'containers/pages/ErrorPage';
 import StaffRoutes from './StaffRoutes';
 import AdminRoutes from './AdminRoutes';
 import StartedContainer from 'containers/templates/StartedLayout';
@@ -16,7 +16,7 @@ const MainRoutes = [
       <Route key="Admin" path="admin" element={<ValidateSession role="admin" />} children={AdminRoutes} />
     </Route>
   </Route>,
-  <Route key="Not Found" path="*" element={<GlobalErrorPage />} />
+  <Route key="Not Found" path="*" element={<ErrorPage />} />
 ];
 
 export default MainRoutes;

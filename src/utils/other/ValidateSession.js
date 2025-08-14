@@ -15,7 +15,7 @@ export default function ValidateSession(props) {
   useEffect(() => {
     if (accountReducer.isLogin !== null && !sessionChecked) {
       if (accountReducer.isLogin === false) {
-        navigate('/admin-login');
+        navigate('/login');
       } else {
         if (accountReducer.role === roleDisallow) {
           navigate('/error');

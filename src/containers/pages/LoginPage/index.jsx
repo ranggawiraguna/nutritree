@@ -174,7 +174,7 @@ DialogForgotPassword.defaultProps = {
   onClose: () => {}
 };
 
-export default function GlobalLoginPage() {
+export default function LoginPage() {
   let navigate = useNavigate();
   const dispatch = useDispatch();
 

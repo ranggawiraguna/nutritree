@@ -6,7 +6,7 @@ import { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PageRoot from './styled';
 
-export default function GlobalProfilePage() {
+export default function ProfilePage() {
   const accountReducer = useSelector((state) => state.accountReducer);
 
   const [openDialogUpdateProfile, setOpenDialogUpdateProfile] = useState(false);

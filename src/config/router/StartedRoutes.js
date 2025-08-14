@@ -1,12 +1,12 @@
 import { Route } from 'react-router-dom';
 import AccountManager from '../../utils/other/AccountManager';
-import GlobalLoginPage from 'containers/pages/GlobalLoginPage';
-import GlobalStartedPage from 'containers/pages/GlobalStartedPage';
+import LoginPage from 'containers/pages/LoginPage';
+import StartedPage from 'containers/pages/StartedPage';
 
 const StartedRoutes = [
-  <Route exact path="/" key="/" element={<GlobalStartedPage />} />,
-  <Route key="/admin-login" element={<AccountManager />}>
-    <Route exact path="/admin-login" element={<GlobalLoginPage />} />
+  <Route exact path="/" key="/" element={<StartedPage />} />,
+  <Route key="/login" element={<AccountManager />}>
+    <Route exact path="/login" element={<LoginPage />} />
   </Route>
 ];
 

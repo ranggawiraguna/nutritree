@@ -1,5 +1,5 @@
 import { Navigate, Route } from 'react-router-dom';
-import GlobalProfilePage from 'containers/pages/GlobalProfilePage';
+import ProfilePage from 'containers/pages/ProfilePage';
 
 const AdminRoutes = [
   <Route key="/admin" exact path="/admin" replace element={<Navigate to="dashboard" />} />,
@@ -9,7 +9,7 @@ const AdminRoutes = [
   <Route key="/admin/grafik-pertumbuhan" path="grafik-pertumbuhan" element={<></>} />,
   <Route key="/admin/berkas-laporan" path="berkas-laporan" element={<></>} />,
   <Route key="/admin/authentication" path="authentication" element={<></>} />,
-  <Route key="/admin/profile" path="profile" element={<GlobalProfilePage />} />
+  <Route key="/admin/profile" path="profile" element={<ProfilePage />} />
 ];
 
 export default AdminRoutes;

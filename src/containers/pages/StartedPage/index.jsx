@@ -9,11 +9,11 @@ import ToolbarStarted from 'components/elements/ToolbarStarted';
 import PageRoot from './styled';
 import { BoxTransition } from 'components/elements/MotionTransitions';
 
-export default function GlobalStartedPage(props) {
+export default function StartedPage(props) {
   return (
     <PageRoot>
       <Box className="content section-one">
-        <ToolbarStarted buttonLink="/admin-login" buttonText="Halaman Login" />
+        <ToolbarStarted buttonLink="/login" buttonText="Halaman Login" />
 
         <Box className="box-content">
           <BoxTransition variant="fade">
