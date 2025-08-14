@@ -1,6 +1,7 @@
 import { Navigate, Route } from 'react-router-dom';
 import ProfilePage from 'containers/pages/ProfilePage';
 import DashboardPage from 'containers/pages/DashboardPage';
+import AuthenticationPage from 'containers/pages/AuthenticationPage';
 
 const AdminRoutes = [
   <Route key="/admin" exact path="/admin" replace element={<Navigate to="dashboard" />} />,
@@ -9,7 +10,7 @@ const AdminRoutes = [
   <Route key="/admin/klasifikasi-gizi" path="klasifikasi-gizi" element={<></>} />,
   <Route key="/admin/grafik-pertumbuhan" path="grafik-pertumbuhan" element={<></>} />,
   <Route key="/admin/berkas-laporan" path="berkas-laporan" element={<></>} />,
-  <Route key="/admin/authentication" path="authentication" element={<></>} />,
+  <Route key="/admin/authentication" path="authentication" element={<AuthenticationPage />} />,
   <Route key="/admin/profile" path="profile" element={<ProfilePage />} />
 ];
 
