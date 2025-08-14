@@ -46,7 +46,7 @@ export default function DashboardGrid({ sectionName, itemValues }) {
   const [isOpenLayerItemK, setIsOpenLayerItemK] = useState(false);
 
   const getDataByTimeline = (timeline, data, reducer) => {
-    return timeline.map((value, index) => {
+    return timeline.map((_, index) => {
       const currentDate = new Date();
 
       let count = 0;

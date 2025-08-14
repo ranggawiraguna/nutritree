@@ -5,8 +5,8 @@ import { collection, limit, onSnapshot, orderBy, query } from 'firebase/firestor
 import { db } from 'config/database/firebase';
 import { orderProcess, orderType } from 'utils/other/EnvironmentValues';
 import DashboardGrid from 'containers/templates/DashboardGrid';
-import IconBag from 'assets/images/icon/DashboardCardBag.png';
-import IconCoin from 'assets/images/icon/DashboardCardCoin.png';
+import CheckNutritionIcon from 'assets/images/icon/CheckNutritionIcon.png';
+import HealthyIcon from 'assets/images/icon/HealthyIcon.png';
 import PageRoot from './styled';
 
 export default function DashboardPage() {
@@ -98,7 +98,7 @@ export default function DashboardPage() {
           },
           {
             title: 'Total-Periksa Gizi',
-            icon: IconBag,
+            icon: CheckNutritionIcon,
             unit: 'Anak',
             data: orders
               .filter(
@@ -124,7 +124,7 @@ export default function DashboardPage() {
           },
           {
             title: 'Persentase-Gizi Baik',
-            icon: IconCoin,
+            icon: HealthyIcon,
             unit: 'Persen',
             data: orders
               .filter(
