@@ -5,10 +5,11 @@ const styledComp = (type) => {
   return styled(Grid)(({ theme }) => ({
     //Normal Breakpoint =====================================================================================
     width: '100%',
+    height: '100%',
     display: 'grid',
     alignItems: 'center',
     gap: 20,
-    gridTemplateRows: 'auto',
+    gridTemplateRows: 'auto 1fr',
     gridTemplateColumns: '1fr auto',
 
     '& > div': {

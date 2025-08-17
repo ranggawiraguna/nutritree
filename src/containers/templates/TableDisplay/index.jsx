@@ -16,14 +16,12 @@ import { styledComp, SelectInput } from './styled';
 export default function TableDisplay({
   withButtonHeader,
   withOptionHeader,
-  withChart,
   title,
   buttonText,
   buttonAction,
   optionSelected,
   optionValues,
   optionAction,
-  chartViews,
   tableContentType,
   tableAlignContent,
   tableHeadContent,
@@ -34,15 +32,9 @@ export default function TableDisplay({
   return (
     <Component
       gridTemplateAreas={
-        withChart
-          ? ` 
+            `
               "A B"
               "C C"
-              "D D"
-            `
-          : `
-              "A B"
-              "D D"
             `
       }
     >
@@ -72,19 +64,7 @@ export default function TableDisplay({
           );
         })()}
       </Box>
-      {(() => {
-        return withChart ? (
-          <Box gridArea="C">
-            <Box className="table-chart">
-              <Box gridArea="Chart">{chartViews[0]}</Box>
-              <Box gridArea="Description">{chartViews[1]}</Box>
-            </Box>
-          </Box>
-        ) : (
-          <></>
-        );
-      })()}
-      <Box gridArea="D">
+      <Box gridArea="C">
         <TableContainer className="table-container" component={Paper}>
           <Table>
             <TableHead />
