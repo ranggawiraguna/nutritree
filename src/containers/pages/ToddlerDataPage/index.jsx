@@ -49,16 +49,9 @@ export default function ToddlerDataPage() {
       text: text
     });
 
-  const handleCreateClick = React.useCallback(() => {
-    navigate('/data-balita/buat-baru');
-  }, [navigate]);
-
-  const handleRowEdit = React.useCallback(
-    (toddler) => () => {
-      navigate(`/data-balita/${toddler.id}/edit`);
-    },
-    [navigate],
-  );
+  const handleCreateClick = React.useCallback(() => navigate('buat-baru'), [navigate]);
+  const handleRowClick = React.useCallback(({ row }) => navigate(`${row.id}`), [navigate]);
+  const handleRowEdit = React.useCallback((toddler) => () => navigate(`${toddler.id}/edit`), [navigate]);
 
   const handleRowDelete = React.useCallback(
     (toddler) => async () => {
@@ -78,13 +71,6 @@ export default function ToddlerDataPage() {
     },
 	// eslint-disable-next-line
     [],
-  );
-
-  const handleRowClick = React.useCallback(
-    ({ row }) => {
-      navigate(`/data-balita/${row.id}`);
-    },
-    [navigate],
   );
 
   const columns = React.useMemo(
