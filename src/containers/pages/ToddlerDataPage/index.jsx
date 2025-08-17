@@ -6,8 +6,9 @@ import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import { DataGrid, GridActionsCellItem, gridClasses } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { doc, deleteDoc, collection, onSnapshot } from 'firebase/firestore';
 import { db } from 'config/database/firebase';
+import { useConfirm } from "material-ui-confirm";
 import Button from '@mui/material/Button';
 import PageRoot from './styled';
 import AlertToast from 'components/elements/AlertToast';
@@ -15,7 +16,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 
-const INITIAL_PAGE_SIZE = 10;
 
 const PageContentHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -29,6 +29,7 @@ const PageContentHeader = styled('div')(({ theme }) => ({
 export default function ToddlerDataPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const confirm = useConfirm();
   const sidebarReducer = useSelector((state) => state.sidebarReducer);
 
   const [isLoading, setIsLoading] = React.useState(true);
@@ -39,6 +40,14 @@ export default function ToddlerDataPage() {
 	text: '',
 	transitionName: 'slideUp'
   });
+
+  const showAlertToast = (type, text) =>
+    setAlertDescription({
+      ...alertDescription,
+      isOpen: true,
+      type: type,
+      text: text
+    });
 
   const handleCreateClick = React.useCallback(() => {
     navigate('/data-balita/buat-baru');
@@ -53,8 +62,21 @@ export default function ToddlerDataPage() {
 
   const handleRowDelete = React.useCallback(
     (toddler) => async () => {
-		//
+		const { confirmed } = await confirm({
+			title: "Kamu yakin ingin menghapus data balita ?",
+			description: "Data yang kamu pilih akan terhapus secara permanen",
+		});
+
+		if (confirmed) {
+			try {
+				await deleteDoc(doc(db, "toddlers", toddler.id)); 
+				showAlertToast("success", "Data balita berhasil dihapus");
+			} catch (error) {
+				showAlertToast("error", "Gagal menghapus Data balita");
+			}
+		}
     },
+	// eslint-disable-next-line
     [],
   );
 
@@ -63,13 +85,6 @@ export default function ToddlerDataPage() {
       navigate(`/data-balita/${row.id}`);
     },
     [navigate],
-  );
-
-  const initialState = React.useMemo(
-    () => ({
-      pagination: { paginationModel: { pageSize: INITIAL_PAGE_SIZE } },
-    }),
-    [],
   );
 
   const columns = React.useMemo(
@@ -179,9 +194,7 @@ export default function ToddlerDataPage() {
             disableRowSelectionOnClick
             onRowClick={handleRowClick}
             loading={isLoading}
-            initialState={initialState}
             showToolbar
-            pageSizeOptions={[5, INITIAL_PAGE_SIZE, 25]}
             sx={{
 				[`& .${gridClasses.columnHeader}`]: {
 					backgroundColor: 'white', // putih untuk header
