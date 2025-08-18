@@ -6,6 +6,9 @@ import ToddlerDataPage from 'containers/pages/ToddlerDataPage';
 import ToddlerCreatePage from 'containers/pages/ToddlerCreatePage';
 import ToddlerEditPage from 'containers/pages/ToddlerEditPage';
 import ToddlerViewPage from 'containers/pages/ToddlerViewPage';
+import NutritionClassificationPage from 'containers/pages/NutritionClassification';
+import GrowthPage from 'containers/pages/GrowthPage';
+import ReportFilePage from 'containers/pages/ReportFilePage';
 
 const AdminRoutes = [
   <Route key="/admin" exact path="/admin" replace element={<Navigate to="dashboard" />} />,
@@ -18,9 +21,9 @@ const AdminRoutes = [
       <Route key="/admin/data-balita/:id/edit" path="edit" element={<ToddlerEditPage />} />,    
     </Route>
   </Route>,
-  <Route key="/admin/klasifikasi-gizi" path="klasifikasi-gizi" element={<></>} />,
-  <Route key="/admin/grafik-pertumbuhan" path="grafik-pertumbuhan" element={<></>} />,
-  <Route key="/admin/berkas-laporan" path="berkas-laporan" element={<></>} />,
+  <Route key="/admin/klasifikasi-gizi" path="klasifikasi-gizi" element={<NutritionClassificationPage />} />,
+  <Route key="/admin/grafik-pertumbuhan" path="grafik-pertumbuhan" element={<GrowthPage />} />,
+  <Route key="/admin/berkas-laporan" path="berkas-laporan" element={<ReportFilePage />} />,
   <Route key="/admin/authentication" path="authentication" element={<AuthenticationPage />} />,
   <Route key="/admin/profile" path="profile" element={<ProfilePage />} />
 ];
