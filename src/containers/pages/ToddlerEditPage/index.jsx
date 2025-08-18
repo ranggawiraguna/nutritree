@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PageRoot from './styled';
 import ToddlerForm from 'containers/templates/ToddlerForm';
 
-export default function ToddlerCreatePage() {
+export default function ToddlerEditPage() {
   const dispatch = useDispatch();
   const sidebarReducer = useSelector((state) => state.sidebarReducer);
 
@@ -14,9 +14,9 @@ export default function ToddlerCreatePage() {
   }, []);
 
   useEffect(() => {
-		if (!(sidebarReducer.isOpen.findIndex((id) => id === 'toddler-data') > -1)) {
-		dispatch({ type: MENU_OPEN, id: 'toddler-data' });
-		}
+    if (!(sidebarReducer.isOpen.findIndex((id) => id === 'toddler-data') > -1)) {
+      dispatch({ type: MENU_OPEN, id: 'toddler-data' });
+    }
 
     return () => {
 		//
@@ -26,7 +26,7 @@ export default function ToddlerCreatePage() {
 
   return (
 	<PageRoot>
-		<ToddlerForm title="Form Tambah Balita" onSubmitForm={handleSubmitForm} />
+		<ToddlerForm title="Edit Data Balita" onSubmitForm={handleSubmitForm} />
 	</PageRoot>
   );
 }
