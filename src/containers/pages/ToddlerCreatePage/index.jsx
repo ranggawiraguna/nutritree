@@ -80,10 +80,6 @@ export default function ToddlerCreatePage() {
 						{ value: 'female', label: 'Perempuan' }
 					]}
 					direction="row"
-					value=""
-					onChange={() => {
-						//
-					}}
 				/>
 				<BootstrapInput title="Tempat Lahir" />
 				<BootstrapInput title="Tanggal Lahir" type="date" />

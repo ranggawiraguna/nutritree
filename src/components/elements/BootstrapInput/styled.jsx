@@ -12,15 +12,15 @@ export default styled(InputBase)(({ theme }) => ({
     backgroundColor: '#F3F6F9',
     border: '1px solid',
     borderColor: '#E0E3E7',
-    fontSize: 16,
+    fontSize: 14,
     width: '100%',
     padding: '5px 6px',
+    height: 24,
     transition: theme.transitions.create([
       'border-color',
       'background-color',
       'box-shadow',
     ]),
-    // Use the system font instead of the default Roboto font.
     fontFamily: [
       'Folks',
     ].join(','),

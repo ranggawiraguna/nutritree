@@ -1,31 +1,47 @@
 import { Box, Typography } from "@mui/material";
-import { IconCalendarPlus } from '@tabler/icons';
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useState } from "react";
 import Component from "./styled"
 	
 export default function BootstrapInput({title, type}) {
+  const [value, setValue] = useState(null);
+
   return (
 	<Box sx={{ width: "100%", marginTop: 2, position: "relative" }}>
 		<Typography variant="p">
 			{title}
 		</Typography>
 		<Box sx={{ position: "relative", paddingTop: 1 }}>
-			<Component readOnly={type === "date"} />
-		{
-			type === "date" ? <Box sx={{ 
-				position: "absolute", 
-				marginTop:0.5, 
-				top: "50%",
-				transform: "translateY(-50%)",
-				right:5, 
-				width:28, 
-				height:28, 
-				display:"flex",
-				justifyContent: "center",
-				alignItems: "center",
-			}}>
-				<IconCalendarPlus size={20} />
-			</Box> : <></>
-		}
+			{
+				type === "date" ? <LocalizationProvider dateAdapter={AdapterDayjs}>
+					<DatePicker
+						label="Tanggal Lahir"
+						value={value}
+						onChange={(_) => setValue(_)}
+						renderInput={({ inputRef, inputProps, InputProps }) => (
+							<>
+								<Component ref={inputRef} {...inputProps} value={value ? value.format("DD/MM/YYYY") : ""} onChange={(_)=>setValue(_.target.value)} />
+								<Box sx={{ 
+									position: "absolute", 
+									marginTop:0.5, 
+									top: "50%",
+									transform: "translateY(-50%)",
+									right:15, 
+									width:28, 
+									height:28, 
+									display:"flex",
+									justifyContent: "center",
+									alignItems: "center",
+								}}>
+									{InputProps?.endAdornment}
+								</Box>
+							</>
+						)}
+					/>
+				</LocalizationProvider> : <Component value={value} onChange={(_)=>setValue(_.target.value)} />
+			}			
 		</Box>
 	</Box>
   );
