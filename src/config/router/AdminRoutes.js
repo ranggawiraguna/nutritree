@@ -5,6 +5,7 @@ import AuthenticationPage from 'containers/pages/AuthenticationPage';
 import ToddlerDataPage from 'containers/pages/ToddlerDataPage';
 import ToddlerCreatePage from 'containers/pages/ToddlerCreatePage';
 import ToddlerEditPage from 'containers/pages/ToddlerEditPage';
+import ToddlerViewPage from 'containers/pages/ToddlerViewPage';
 
 const AdminRoutes = [
   <Route key="/admin" exact path="/admin" replace element={<Navigate to="dashboard" />} />,
@@ -12,7 +13,7 @@ const AdminRoutes = [
   <Route key="/admin/data-balita" path="data-balita" element={<ToddlerDataPage />} />,
   <Route key="/admin/data-balita" path="data-balita" >
     <Route key="/admin/data-balita/buat-baru" path="buat-baru" element={<ToddlerCreatePage />} />,
-    <Route key="/admin/data-balita/:id" path=":id" element={<></>} />,
+    <Route key="/admin/data-balita/:id" path=":id" element={<ToddlerViewPage />} />,
     <Route key="/admin/data-balita/:id" path=":id">
       <Route key="/admin/data-balita/:id/edit" path="edit" element={<ToddlerEditPage />} />,    
     </Route>

@@ -1,24 +1,12 @@
 import * as React from 'react';
 import { Fragment, useState } from 'react';
 import { Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import PageRoot from './styled';
 import AlertToast from 'components/elements/AlertToast';
-import Button from '@mui/material/Button';
-import SaveIcon from '@mui/icons-material/Save';
 import { Box } from '@mui/system';
 import BootstrapInput from 'components/elements/BootstrapInput';
 import RadioInput from 'components/elements/RadioInput';
-
-const PageContentHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  gap: theme.spacing(2),
-  marginBottom: theme.spacing(3),
-}));
-
+import PageContentHeader from 'components/elements/PageContentHeader';
 
 export default function ToddlerForm({onSubmitForm}) {
   const [alertDescription, setAlertDescription] = useState({
@@ -31,12 +19,7 @@ export default function ToddlerForm({onSubmitForm}) {
   return (
 	<Fragment>
 	  <PageRoot>
-		<PageContentHeader>
-			<Typography variant="h2">Form Tambah Balita</Typography>
-			<Button variant="contained" onClick={onSubmitForm} startIcon={<SaveIcon />}>
-				Simpan Data
-			</Button>
-		</PageContentHeader>	
+		<PageContentHeader title="Form Tambah Balita" buttonText="Simpan Data" buttonAction={onSubmitForm} />
 		<Box sx={{
 			backgroundColor: 'rgba(255,255,255,0.75)', 
 			padding: 2, 
