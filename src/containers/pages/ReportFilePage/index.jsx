@@ -5,10 +5,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import PageRoot from './styled';
 import PageContentHeader from 'components/elements/PageContentHeader';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from 'config/database/firebase';
 
 export default function ReportFilePage() {
   const dispatch = useDispatch();
   const sidebarReducer = useSelector((state) => state.sidebarReducer);
+
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [inspections, setInspections] = React.useState([]);
 
   const columns = React.useMemo(
 	() => [
@@ -65,8 +70,13 @@ export default function ReportFilePage() {
 		dispatch({ type: MENU_OPEN, id: 'report' });
 	}
 
+	const listenerInspections = onSnapshot(collection(db, 'inspections'), (snapshot) => {
+		setInspections(snapshot.docs.map((document) => ({ id: document.id, ...document.data() })));
+		setIsLoading(false);
+	});
+
 	return () => {
-		//
+		listenerInspections();
 	};
 	// eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -76,15 +86,15 @@ export default function ReportFilePage() {
 		<PageContentHeader title="Berkas Laporan" buttonText="Unduh Laporan" buttonAction={()=>{}} buttonIconHidden />
 		<DataGrid
 			label="Data Pemeriksaan"
-			rows={[]}
-			rowCount={0}
+			rows={inspections}
+			rowCount={inspections.length}
 			columns={columns}
 			pagination
 			sortingMode="client"
 			filterMode="client"
 			paginationMode="client"
 			disableRowSelectionOnClick
-			loading={false}
+			loading={isLoading}
 			showToolbar
 			sx={{
 				flex: 1,

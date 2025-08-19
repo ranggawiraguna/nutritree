@@ -8,7 +8,7 @@ import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router';
 import ChartSingle from 'components/elements/ChartSingle';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from 'config/database/firebase';
 import { dateFormatter, getAddress, getAgeText, getGenderText } from 'utils/other/Services';
 
@@ -19,7 +19,9 @@ export default function ToddlerViewPage() {
   const params = useParams();
 
   const [tab, setTab] = React.useState(0)
+  const [inspectionLoading, setInspectionLoading] = React.useState(true);
   const [toddler, setToddler] = React.useState({});
+  const [inspections, setInspections] = React.useState([]);
 
   const columns = React.useMemo(
     () => [
@@ -91,9 +93,14 @@ export default function ToddlerViewPage() {
 	const listenerToddlers = onSnapshot(doc(db, 'toddlers', params.id), (snapshot) => {
       setToddler(snapshot.data());
     });
+	const listenerInspections = onSnapshot(query(collection(db, 'inspections'), where('toddlerId', '==', params.id)), (snapshot) => {
+		setInspections(snapshot.docs.map((document) => ({ id: document.id, ...document.data() })));
+		setInspectionLoading(false);
+	});
 
     return () => {
       listenerToddlers();
+	  listenerInspections();
     };
 	// eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -212,15 +219,15 @@ export default function ToddlerViewPage() {
 			</Grid> : <Box sx={{ paddingTop : 2, height: 600 }}>
 				<DataGrid
 					label="Riwayat Pemeriksaan"
-					rows={[]}
-					rowCount={0}
+					rows={inspections}
+					rowCount={inspections.length}
 					columns={columns}
 					pagination
 					sortingMode="client"
 					filterMode="client"
 					paginationMode="client"
 					disableRowSelectionOnClick
-					loading={false}
+					loading={inspectionLoading}
 					showToolbar
 					sx={{
 						[`& .${gridClasses.columnHeader}`]: {

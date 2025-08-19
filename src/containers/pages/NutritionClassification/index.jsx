@@ -273,7 +273,7 @@ const showAlertToast = (type, text) =>
 			}
 		</Grid>
 		<Drawer anchor="bottom" open={drawerOpen} onClose={()=>toggleDrawer(false)}>
-			<Box sx={{ height:"60vh" }}>
+			<Box sx={{ height:"80vh", display: 'flex', flexDirection: 'column' }}>
 				<Box sx={{display: 'flex', justifyContent: 'space-between', alignItems:"center", padding: 3 }}>
 					<Typography variant="h3">
 						Pilih Balita
@@ -296,7 +296,7 @@ const showAlertToast = (type, text) =>
 					loading={drawerLoading}
 					showToolbar
 					sx={{
-						height: '60vh',
+						flex: 1,
 						[`& .${gridClasses.columnHeader}`]: {
 							backgroundColor: 'white', // putih untuk header
 						},
