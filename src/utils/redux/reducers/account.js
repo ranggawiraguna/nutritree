@@ -12,6 +12,7 @@ export function restoreSession(action) {
     const docSnapshot = await getDoc(doc(db, 'admins', action.data));
     if (docSnapshot.exists()) {
       data = {
+        id: docSnapshot.id,
         username: action.data,
         ...docSnapshot.data()
       };

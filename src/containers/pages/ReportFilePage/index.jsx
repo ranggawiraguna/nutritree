@@ -61,8 +61,8 @@ export default function ReportFilePage() {
 );
 
   useEffect(() => {
-	if (!(sidebarReducer.isOpen.findIndex((id) => id === 'berkas-laporan') > -1)) {
-		dispatch({ type: MENU_OPEN, id: 'berkas-laporan' });
+	if (!(sidebarReducer.isOpen.findIndex((id) => id === 'report') > -1)) {
+		dispatch({ type: MENU_OPEN, id: 'report' });
 	}
 
 	return () => {

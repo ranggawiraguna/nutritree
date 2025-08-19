@@ -12,8 +12,8 @@ export default function GrowthPage() {
   const sidebarReducer = useSelector((state) => state.sidebarReducer);
 
   useEffect(() => {
-	if (!(sidebarReducer.isOpen.findIndex((id) => id === 'grafik-pertumbuhan') > -1)) {
-		dispatch({ type: MENU_OPEN, id: 'grafik-pertumbuhan' });
+	if (!(sidebarReducer.isOpen.findIndex((id) => id === 'growth') > -1)) {
+		dispatch({ type: MENU_OPEN, id: 'growth' });
 	}
 
 	return () => {

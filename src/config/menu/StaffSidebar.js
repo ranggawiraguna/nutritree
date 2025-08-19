@@ -42,7 +42,7 @@ const staffSidebar = {
         type: 'group',
         children: [
           {
-            id: 'customer',
+            id: 'growth',
             title: 'Grafik Pertumbuhan',
             type: 'item',
             url: '/staff/grafik-pertumbuhan',
