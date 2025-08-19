@@ -5,16 +5,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import PageRoot from './styled';
 import PageContentHeader from 'components/elements/PageContentHeader';
 import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import ChartSingle from 'components/elements/ChartSingle';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from 'config/database/firebase';
+import { dateFormatter, getAddress, getAgeText, getGenderText } from 'utils/other/Services';
 
 export default function ToddlerViewPage() {
   const dispatch = useDispatch();
   const sidebarReducer = useSelector((state) => state.sidebarReducer);
   const navigate = useNavigate();
+  const params = useParams();
 
   const [tab, setTab] = React.useState(0)
+  const [toddler, setToddler] = React.useState({});
 
   const columns = React.useMemo(
     () => [
@@ -83,9 +88,13 @@ export default function ToddlerViewPage() {
 	  dispatch({ type: MENU_OPEN, id: 'toddler-data' });
 	}
 
-	return () => {
-		//
-	};
+	const listenerToddlers = onSnapshot(doc(db, 'toddlers', params.id), (snapshot) => {
+      setToddler(snapshot.data());
+    });
+
+    return () => {
+      listenerToddlers();
+    };
 	// eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -106,13 +115,13 @@ export default function ToddlerViewPage() {
 			}}
 			rowSpacing={2}
 		> 
-			<InformationTextGroup title="Nomor Induk Kependudukan (NIK)" description="3175281973298173" size={{ xs:12, md:6 }} />
-			<InformationTextGroup title="Nama Lengkap" description="Ucup Firmansyah" size={{ xs:12, md:6 }} />
-			<InformationTextGroup title="Jenis Kelamin" description="Laki-Laki" size={{ xs:12, md:6 }} />
-			<InformationTextGroup title="Nama Orang Tua" description="Ali Firmansyah" size={{ xs:12, md:6 }} />
-			<InformationTextGroup title="Tempat, Tanggal Lahir" description="Jakarta, 20 Juni 900" size={{ xs:12, md:6 }} />
-			<InformationTextGroup title="Usia" description="2 Tahun 9 Bulan" size={{ xs:12, md:6 }} />
-			<InformationTextGroup title="Alamat Lengkap" description="Jl. Kamboja No.10, RT.10/RW.1, Kb. Pala, Kec. Makasar, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13650" size={{ xs: 12 }} />
+			<InformationTextGroup title="Nomor Induk Kependudukan (NIK)" description={toddler.nik ?? "Tidak Ada"} size={{ xs:12, md:6 }} />
+			<InformationTextGroup title="Nama Lengkap" description={toddler.name ?? "Tidak Ada"} size={{ xs:12, md:6 }} />
+			<InformationTextGroup title="Jenis Kelamin" description={getGenderText(toddler.gender)} size={{ xs:12, md:6 }} />
+			<InformationTextGroup title="Nama Orang Tua" description={toddler.parentName ?? "Tidak Ada"} size={{ xs:12, md:6 }} />
+			<InformationTextGroup title="Tempat, Tanggal Lahir" description={`${toddler.placeOfBirth + ", "}${dateFormatter(toddler.birthDay, "dd MMMM yyyy")}`} size={{ xs:12, md:6 }} />
+			<InformationTextGroup title="Usia" description={getAgeText(toddler.birthDay)} size={{ xs:12, md:6 }} />
+			<InformationTextGroup title="Alamat Lengkap" description={toddler.address ? getAddress(toddler.address) : ""} size={{ xs: 12 }} />
 		</Grid>
 		<Box sx={{ height: 10 }} />
 		<Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

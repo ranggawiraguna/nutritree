@@ -94,10 +94,4 @@ MaterialTransitions.propTypes = {
   direction: PropTypes.oneOf(['up', 'down', 'left', 'right'])
 };
 
-MaterialTransitions.defaultProps = {
-  type: 'grow',
-  position: 'top-left',
-  direction: 'up'
-};
-
 export default MaterialTransitions;

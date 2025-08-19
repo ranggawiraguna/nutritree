@@ -82,7 +82,7 @@ export default function ToddlerDataPage() {
 			filterable: false,
 			valueGetter: (params) => params.api.getRowIndex(params.row.id) + 1,
 		},
-		{ field: 'code', headerName: 'Kode', flex: 1 },
+		{ field: 'nik', headerName: 'NIK', flex: 1 },
 		{ field: 'name', headerName: 'Nama', flex: 1 },
 		{ field: 'gender', headerName: 'Jenis Kelamin', flex: 1 },
 		{
