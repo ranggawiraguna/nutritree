@@ -1,4 +1,4 @@
-import { Box, Button, CardMedia, ClickAwayListener, Typography, useMediaQuery } from '@mui/material';
+import { Box, Button, CardMedia, ClickAwayListener, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import Component from './styled';
 import DashboardWelcomeBanner from 'assets/images/background/DashboardWelcomeBanner.svg';
@@ -7,7 +7,6 @@ import OptionItemC from 'assets/images/icon/DashboardItemPurpleOption.svg';
 import IconItemB from 'assets/images/icon/DashboardItemBlueIcon.svg';
 import IconItemC from 'assets/images/icon/DashboardItemPurpleIcon.svg';
 import IconMarkQuestion from 'assets/images/icon/MarkQuestion.svg';
-import IconMarkOption from 'assets/images/icon/MarkDotThreeV.svg';
 import IconCardNoteInfo from 'assets/images/icon/DashboardCardNoteInfo.svg';
 import IconCardNote from 'assets/images/icon/DashboardCardNote.svg';
 import AutoSizeText from 'components/elements/AutoSizeText';
@@ -17,16 +16,12 @@ import ChartMultiple from 'components/elements/ChartMultiple';
 import LayerOverlayDetail from 'components/elements/LayerOverlayDetail';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useTheme } from '@emotion/react';
 import { reverseTimelineValue, timeline, timelineValues } from 'utils/other/EnvironmentValues';
 import { moneyFormatter } from 'utils/other/Services';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from 'config/database/firebase';
 
 export default function DashboardGrid({ sectionName, itemValues }) {
-  const theme = useTheme();
-  const matchOnlyXs = useMediaQuery(theme.breakpoints.only('xs'));
-
   const accountReducer = useSelector((state) => state.accountReducer);
   const navigate = useNavigate();
 
@@ -39,7 +34,6 @@ export default function DashboardGrid({ sectionName, itemValues }) {
 
   const [isOpenOptionItemB, setIsOpenOptionItemB] = useState(false);
   const [isOpenOptionItemC, setIsOpenOptionItemC] = useState(false);
-  const [isOpenOptionItemG, setIsOpenOptionItemG] = useState(false);
 
   const [isOpenLayerItemG, setIsOpenLayerItemG] = useState(false);
   const [isOpenLayerItemJ, setIsOpenLayerItemJ] = useState(false);
@@ -218,11 +212,7 @@ export default function DashboardGrid({ sectionName, itemValues }) {
               {itemValues[2].title}
             </Typography>
           </Box>
-          <Box gridArea="B">
-            <Button variant="contained" onClick={() => navigate(`/${sectionName}/${itemValues[2].path}`)}>
-              {matchOnlyXs ? 'Detail' : 'Lihat Detail'}
-            </Button>
-          </Box>
+          <Box gridArea="B"/>
           <Box gridArea="C">
             <SelectOptionTimeline onValueChanged={(value, timeline) => setTimelineValuesD(reverseTimelineValue(value, timeline))} />
           </Box>
@@ -328,22 +318,7 @@ export default function DashboardGrid({ sectionName, itemValues }) {
               {itemValues[5].title}
             </Typography>
           </Box>
-          <Box gridArea="B">
-            <ClickAwayListener mouseEvent="onMouseDown" touchEvent="onTouchStart" onClickAway={() => setIsOpenOptionItemG(false)}>
-              <Box>
-                <Button type="Button" onClick={() => setIsOpenOptionItemG((prev) => !prev)}>
-                  <CardMedia component="img" src={IconMarkOption} />
-                </Button>
-                {isOpenOptionItemG ? (
-                  <Box>
-                    <Button onClick={() => navigate(`/${sectionName}/${itemValues[5].path}`)}>Lihat Detail</Button>
-                  </Box>
-                ) : (
-                  <></>
-                )}
-              </Box>
-            </ClickAwayListener>
-          </Box>
+          <Box gridArea="B"/>
           <Box gridArea="C">
             {
               itemValues[5].data.length > 0 ? <ChartSingle
@@ -375,11 +350,7 @@ export default function DashboardGrid({ sectionName, itemValues }) {
               {itemValues[6].title}
             </Typography>
           </Box>
-          <Box gridArea="B">
-            <Button variant="contained" onClick={() => navigate(`/${sectionName}/${itemValues[6].path}`)}>
-              {matchOnlyXs ? 'Detail' : 'Lihat Detail'}
-            </Button>
-          </Box>
+          <Box gridArea="B"/>
           <Box gridArea="C">
             <SelectOptionTimeline onValueChanged={(value, timeline) => setTimelineValuesH(reverseTimelineValue(value, timeline))} />
           </Box>
@@ -417,11 +388,7 @@ export default function DashboardGrid({ sectionName, itemValues }) {
                 Kunjungan Aplikasi
               </Typography>
             </Box>
-            <Box gridArea="B">
-              <Button variant="contained" onClick={() => navigate(`/${sectionName}/app-visit`)}>
-                {matchOnlyXs ? 'Detail' : 'Lihat Detail'}
-              </Button>
-            </Box>
+            <Box gridArea="B"/>
             <Box gridArea="C">
               <SelectOptionTimeline onValueChanged={(value, timeline) => setTimelineValuesI(reverseTimelineValue(value, timeline))} />
             </Box>
