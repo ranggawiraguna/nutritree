@@ -6,7 +6,6 @@ import PageRoot from './styled';
 import SaveIcon from '@mui/icons-material/Save';
 import PageContentHeader from 'components/elements/PageContentHeader';
 import { Box, Button, Drawer, Grid, IconButton, Typography } from '@mui/material';
-import BootstrapInput from 'components/elements/BootstrapInput/styled';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { IconUserPlus } from '@tabler/icons';
 import { addDoc, collection, onSnapshot } from 'firebase/firestore';
@@ -16,13 +15,13 @@ import { dateFormatter, getAddress, getAgeText, getGenderText } from 'utils/othe
 import { RemoveCircleRounded } from '@mui/icons-material';
 import AlertToast from 'components/elements/AlertToast';
 import { useNavigate } from 'react-router';
+import BootstrapInput from 'components/elements/BootstrapInput';
 
 export default function NutritionClassificationPage() {
   const dispatch = useDispatch();
   const sidebarReducer = useSelector((state) => state.sidebarReducer);
   const accountReducer = useSelector((state) => state.accountReducer);
   const navigate = useNavigate();
-
 
   const [toddlers, setToddlers] = React.useState([]);
 

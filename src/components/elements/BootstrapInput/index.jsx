@@ -7,36 +7,39 @@ import dayjs from "dayjs";
 	
 export default function BootstrapInput({title, type, value, setValueChanged}) {
   return (
-	<Box sx={{ width: "100%", marginTop: 2, position: "relative" }}>
-		<Typography variant="p">
-			{title}
-		</Typography>
-		<Box sx={{ position: "relative", paddingTop: 1 }}>
+	<Box sx={title ? { width: "100%", marginTop: 2, position: "relative" } : {}}>
+		{
+			title ? <Typography variant="p">
+				{title}
+			</Typography> : <></>
+		}
+		<Box sx={title ? { position: "relative", paddingTop: 1 } : {}}>
 			{
 				type === "date" ? <LocalizationProvider dateAdapter={AdapterDayjs}>
 					<DatePicker
 						label="Tanggal Lahir"
 						value={value ? dayjs(value) : null}
 						onChange={(newValue) => setValueChanged(newValue ? newValue.format("YYYY-MM-DD") : "")}
-						renderInput={({ inputRef, inputProps, InputProps }) => (
-							<>
-								<Component ref={inputRef} {...inputProps} value={value ? dayjs(value).format("DD/MM/YYYY") : ""} />
-								<Box sx={{ 
-									position: "absolute", 
-									marginTop:0.5, 
-									top: "50%",
-									transform: "translateY(-50%)",
-									right:15, 
-									width:28, 
-									height:28, 
-									display:"flex",
-									justifyContent: "center",
-									alignItems: "center",
-								}}>
-									{InputProps?.endAdornment}
+						slots={{
+							textField: (params) => (
+								<Box sx={{ position: "relative" }}>
+									<Component ref={params.inputRef} inputProps={{...params.inputProps, value: value ? dayjs(value).format("DD/MM/YYYY") : ""}} value={value ? dayjs(value).format("DD/MM/YYYY") : ""} />
+									<Box sx={{ 
+										position: "absolute", 
+										top: "50%",
+										transform: "translateY(-50%)",
+										right:15, 
+										width:28, 
+										height:28, 
+										display:"flex",
+										justifyContent: "center",
+										alignItems: "center",
+									}}>
+										{params.InputProps?.endAdornment}
+									</Box>
 								</Box>
-							</>
-						)}
+							),
+						}}
 					/>
 				</LocalizationProvider> : <Component value={value} onChange={(_)=>setValueChanged(_.target.value)} />
 			}			

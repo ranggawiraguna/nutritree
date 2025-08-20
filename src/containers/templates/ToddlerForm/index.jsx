@@ -63,7 +63,7 @@ export default function ToddlerForm({value, onSubmitForm}) {
 	  setAddressData({ ...addressData, ...value.address });
 	}
 	// eslint-disable-next-line
-  }, [value]);
+  }, []);
 
   return (
 	<Fragment>
@@ -118,7 +118,7 @@ export default function ToddlerForm({value, onSubmitForm}) {
 				<BootstrapInput title="RW" value={addressData["rw"]} setValueChanged={(_)=>handleChangeAddressData("rw",_)} />
 				<BootstrapInput title="No" value={addressData["no"]} setValueChanged={(_)=>handleChangeAddressData("no",_)} />
 				<BootstrapInput title="Kelurahan" value={addressData["village"]} setValueChanged={(_)=>handleChangeAddressData("village",_)} />
-				<BootstrapInput title="Kecamatan" value={addressData["sub_district"]} setValueChanged={(_)=>handleChangeAddressData("sub_district",_)} />
+				<BootstrapInput title="Kecamatan" value={addressData["subDistrict"]} setValueChanged={(_)=>handleChangeAddressData("subDistrict",_)} />
 				<BootstrapInput title="Kabupaten/Kota" value={addressData["city"]} setValueChanged={(_)=>handleChangeAddressData("city",_)} />
 				<BootstrapInput title="Provinsi" value={addressData["province"]} setValueChanged={(_)=>handleChangeAddressData("province",_)} />
 			</Box>
