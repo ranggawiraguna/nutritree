@@ -16,6 +16,10 @@ export default function ReportFilePage() {
   const [toddlers, setToddlers] = React.useState([]);
   const [inspections, setInspections] = React.useState([]);
 
+  const handleDownloadReport = async () => {
+    // Implementasi logika untuk mengunduh laporan
+  };
+
   const columns = React.useMemo(
 	() => [
 		{
@@ -142,11 +146,11 @@ export default function ReportFilePage() {
 			}}
 			slotProps={{
 				loadingOverlay: {
-				variant: 'circular-progress',
-				noRowsVariant: 'circular-progress',
+					variant: 'circular-progress',
+					noRowsVariant: 'circular-progress',
 				},
 				baseIconButton: {
-				size: 'small',
+					size: 'small',
 				},
 			}}
 		/>
