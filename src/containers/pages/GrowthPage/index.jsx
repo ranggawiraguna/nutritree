@@ -86,7 +86,7 @@ export default function GrowthPage() {
 					<Typography variant="h4">Perbandingan Gender</Typography>
 					<Box sx={{flex: 1, marginBottom : -2}}>
 						<ChartSingle
-							id={`ChartA`}
+							id={`ChartC`}
 							type="bar"
 							label={[]}
 							data={[]}
@@ -109,7 +109,7 @@ export default function GrowthPage() {
 					<Typography variant="h4">Jumlah Pemeriksaan</Typography>
 					<Box sx={{flex: 1, marginBottom : -2}}>
 						<ChartSingle
-							id={`ChartA`}
+							id={`ChartD`}
 							type="bar"
 							label={[]}
 							data={[]}

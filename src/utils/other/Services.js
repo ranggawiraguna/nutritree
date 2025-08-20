@@ -24,7 +24,11 @@ const dateFormatter = (date, stringFormat) => {
   try {
     value = format(date ? date : new Date(), stringFormat, { locale: idLocale });
   } catch (e) {
-    value = format(date ? date.toDate() : new Date(), stringFormat, { locale: idLocale });
+    try{
+      value = format(date ? new Date(date) : new Date(), stringFormat, { locale: idLocale });
+    } catch(e) {
+      value = ''
+    }
   }
 
   return value;
