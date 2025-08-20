@@ -7,14 +7,14 @@ import { Avatar, Box, ButtonBase, Card, Grid, InputAdornment } from '@mui/materi
 import { IconSearch, IconX } from '@tabler/icons';
 import { PopperStyle, OutlineInputStyle, HeaderAvatarStyle } from './styled';
 
-const MobileSearch = ({ value, setValue, popupState }) => {
+const MobileSearch = ({ value, setValueChanged, popupState }) => {
   const theme = useTheme();
 
   return (
     <OutlineInputStyle
       id="input-search-header"
       value={value}
-      onChange={(e) => setValue(e.target.value)}
+      onChange={(e) => setValueChanged(e.target.value)}
       sx={{
         borderRadius: '12px'
       }}
@@ -56,12 +56,12 @@ const MobileSearch = ({ value, setValue, popupState }) => {
 
 MobileSearch.propTypes = {
   value: PropTypes.string,
-  setValue: PropTypes.func
+  setValueChanged: PropTypes.func
 };
 
 export default function SearchSection() {
   const theme = useTheme();
-  const [value, setValue] = useState('');
+  const [value, setValueChanged] = useState('');
 
   return (
     <>
@@ -92,7 +92,7 @@ export default function SearchSection() {
                         <Box sx={{ p: 2 }}>
                           <Grid container alignItems="center" justifyContent="space-between">
                             <Grid item xs>
-                              <MobileSearch value={value} setValue={setValue} popupState={popupState} />
+                              <MobileSearch value={value} setValueChanged={setValueChanged} popupState={popupState} />
                             </Grid>
                           </Grid>
                         </Box>
@@ -112,7 +112,7 @@ export default function SearchSection() {
           sx={{
             borderRadius: '12px'
           }}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => setValueChanged(e.target.value)}
           placeholder="Pencarian"
           endAdornment={
             <InputAdornment position="start">

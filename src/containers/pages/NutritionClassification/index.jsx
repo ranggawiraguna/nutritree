@@ -197,7 +197,7 @@ export default function NutritionClassificationPage() {
 				<Typography variant="h4" gutterBottom>
 					Tanggal periksa
 				</Typography>
-				<BootstrapInput type="date" value={inspectionForm["date"]} setValue={(_)=>handleChangeInspectionForm("date",_)}/>
+				<BootstrapInput type="date" value={inspectionForm["date"]} setValueChanged={(_)=>handleChangeInspectionForm("date",_)}/>
 			</Grid>
 			<Grid item xs={12}>
 				<Typography variant="h4" gutterBottom>
@@ -256,13 +256,13 @@ export default function NutritionClassificationPage() {
 				<Typography variant="h4" gutterBottom>
 					Tinggi Badan
 				</Typography>
-				<BootstrapInput value={inspectionForm["height"]} setValue={(_)=>handleChangeInspectionForm("height",_)}/>
+				<BootstrapInput value={inspectionForm["height"]} setValueChanged={(_)=>handleChangeInspectionForm("height",_)}/>
 			</Grid>
 			<Grid item xs={12} sm={6}>
 				<Typography variant="h4" gutterBottom>
 					Berat Badan
 				</Typography>
-				<BootstrapInput value={inspectionForm["weight"]} setValue={(_)=>handleChangeInspectionForm("weight",_)}/>
+				<BootstrapInput value={inspectionForm["weight"]} setValueChanged={(_)=>handleChangeInspectionForm("weight",_)}/>
 			</Grid>
 			{
 				inspectionResult ? <>
@@ -270,13 +270,13 @@ export default function NutritionClassificationPage() {
 						<Typography variant="h4" gutterBottom>
 							Hasil Pemeriksaan
 						</Typography>
-						<BootstrapInput readOnly value={inspectionResult} setValue={(_)=>setInspectionResult(_)}/>
+						<BootstrapInput readOnly value={inspectionResult} setValueChanged={(_)=>setInspectionResult(_)}/>
 					</Grid>
 					<Grid item xs={12} >
 						<Typography variant="h4" gutterBottom>
 							Catatan Pemeriksaan
 						</Typography>
-						<BootstrapInput value={inspectionForm["note"]} setValue={(_)=>handleChangeInspectionForm("note",_)}/>
+						<BootstrapInput value={inspectionForm["note"]} setValueChanged={(_)=>handleChangeInspectionForm("note",_)}/>
 					</Grid>
 					<Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
 						<Button variant="contained" onClick={handleSaveInspectionForm} startIcon={<SaveIcon />}>

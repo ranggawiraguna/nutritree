@@ -182,7 +182,7 @@ export default function LoginPage() {
 
   const [openDialogForgotPassword, setOpenDialogForgotPassword] = useState(false);
 
-  const [values, setValues] = useState({
+  const [values, setValueChangeds] = useState({
     username: '',
     password: '',
     showPassword: false
@@ -198,7 +198,7 @@ export default function LoginPage() {
   });
 
   const clearLoginForm = () => {
-    setValues({
+    setValueChangeds({
       username: '',
       password: ''
     });
@@ -214,11 +214,11 @@ export default function LoginPage() {
     });
 
   const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
+    setValueChangeds({ ...values, [prop]: event.target.value });
   };
 
   const handleClickShowPassword = () => {
-    setValues({
+    setValueChangeds({
       ...values,
       showPassword: !values.showPassword
     });
