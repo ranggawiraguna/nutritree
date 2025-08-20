@@ -231,7 +231,7 @@ export default function ToddlerViewPage() {
 							</Grid>
 							<Grid item xs={12}>
 								<Typography variant="h5" sx={{ fontWeight: "600" }}>Catatan</Typography>
-								<Typography variant="p">{inspections[0]?.notes || "Tidak Ada"}</Typography>
+								<Typography variant="p">{inspections[0]?.note || "Tidak Ada"}</Typography>
 							</Grid>
 						</Grid>
 					</Box>

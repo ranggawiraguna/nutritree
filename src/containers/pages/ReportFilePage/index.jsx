@@ -34,7 +34,7 @@ export default function ReportFilePage() {
 	  });
 
   const getToddlerAgeText = (toddlerId, inspectionDate) => {
-	const birthDay = new Date(toddlers.find((t) => t.id === toddlerId).birthDay);
+	const birthDay = new Date(toddlers.find((t) => t.id === toddlerId)?.birthDay);
 	const now = new Date(inspectionDate);
 
 	if (!birthDay || !now) return "";
@@ -64,7 +64,7 @@ export default function ReportFilePage() {
 					"Berat (Kilogram)": inspection.weight,
 					"Umur": getToddlerAgeText(inspection.toddlerId, inspection.date),
 					"Status Gizi": inspection.status,
-					"Catatan": inspection.notes,
+					"Catatan": inspection.note,
 				});
 			})
 		);

@@ -31,7 +31,7 @@ export default function NutritionClassificationPage() {
 	height: '',
 	weight: '',
 	status: '',
-	notes: ''
+	note: ''
   });
 
   const [toddlerSelected, setToddlerSelected] = React.useState({});
@@ -69,7 +69,7 @@ export default function NutritionClassificationPage() {
 	setInspectionResult(["Normal", "Gizi Buruk", "Gizi Kurang", "Gizi Lebih"][Math.floor(Math.random() * 4)]);
   },[])
 
-  const handleSaveInspectionForm = React.useCallback(() => {
+  const handleSaveInspectionForm = () => {
 	if(!formloading){
 		setFormLoading(true);
 		if(toddlerSelected.id && inspectionForm.date && inspectionForm.height && inspectionForm.weight && inspectionResult){
@@ -79,8 +79,8 @@ export default function NutritionClassificationPage() {
 				date: inspectionForm.date,
 				height: inspectionForm.height,
 				weight: inspectionForm.weight,
-				status: inspectionForm.status,
-				notes: inspectionForm.notes,
+				notes: inspectionForm.note,
+				status: inspectionResult
 			})).catch((_) => {
 				showAlertToast('error', 'Terjadi kesalahan saat menambahkan data pemeriksaan');
 			}).then((_)=>{
@@ -97,7 +97,7 @@ export default function NutritionClassificationPage() {
 		}
 	}
 	// eslint-disable-next-line
-  }, []);
+  };
 
   const InformationTextGroup = ({title, description, size}) => {
 	return (
@@ -240,7 +240,7 @@ export default function NutritionClassificationPage() {
 						<InformationTextGroup title="Nama Lengkap" description={toddlerSelected.name ?? "Tidak Ada"} size={{ xs:12, md:6 }} />
 						<InformationTextGroup title="Jenis Kelamin" description={getGenderText(toddlerSelected.gender)} size={{ xs:12, md:6 }} />
 						<InformationTextGroup title="Nama Orang Tua" description={toddlerSelected.parentName ?? "Tidak Ada"} size={{ xs:12, md:6 }} />
-						<InformationTextGroup title="Tempat, Tanggal Lahir" description={`${toddlerSelected.placeOfBirth + ", "}${dateFormatter(toddlerSelected.birthDay, "dd MMMM yyyy")}`} size={{ xs:12, md:6 }} />
+						<InformationTextGroup title="Tempat, Tanggal Lahir" description={`${toddlerSelected.placeOfBirth + ", "}${dateFormatter(new Date(toddlerSelected.birthDay), "dd MMMM yyyy")}`} size={{ xs:12, md:6 }} />
 						<InformationTextGroup title="Usia" description={getAgeText(toddlerSelected.birthDay)} size={{ xs:12, md:6 }} />
 						<InformationTextGroup title="Alamat Lengkap" description={toddlerSelected.address ? getAddress(toddlerSelected.address) : ""} size={{ xs: 10 }} />
 						<Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
