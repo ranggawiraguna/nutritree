@@ -7,17 +7,81 @@ import PageContentHeader from 'components/elements/PageContentHeader';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from 'config/database/firebase';
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export default function ReportFilePage() {
   const dispatch = useDispatch();
   const sidebarReducer = useSelector((state) => state.sidebarReducer);
 
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoadingDownload, setIsLoadingDownload] = React.useState(false);
   const [toddlers, setToddlers] = React.useState([]);
   const [inspections, setInspections] = React.useState([]);
+  const [alertDescription, setAlertDescription] = React.useState({
+	  isOpen: false,
+	  type: 'info',
+	  text: '',
+	  transitionName: 'slideUp'
+  });
+  
+  const showAlertToast = (type, text) =>
+	  setAlertDescription({
+		...alertDescription,
+		isOpen: true,
+		type: type,
+		text: text
+	  });
+
+  const getToddlerAgeText = (toddlerId, inspectionDate) => {
+	const birthDay = new Date(toddlers.find((t) => t.id === toddlerId).birthDay);
+	const now = new Date(inspectionDate);
+
+	if (!birthDay || !now) return "";
+
+	let year = now.getFullYear() - birthDay.getFullYear();
+	let month = now.getMonth() - birthDay.getMonth();
+
+	if (month < 0) {
+		year -= 1;
+		month += 12;
+	}
+
+	return `${year} Tahun ${month} Bulan`;
+  }
 
   const handleDownloadReport = async () => {
-    // Implementasi logika untuk mengunduh laporan
+	if(!isLoadingDownload){
+		setIsLoadingDownload(true);
+		const worksheet = XLSX.utils.json_to_sheet(
+			inspections.map((inspection) => {
+				const date = new Date(inspection.date);
+				return ({
+					"Tanggal Pemeriksaan": `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`,
+					"NIK Balita": toddlers.find((t) => t.id === inspection.toddlerId)?.nik || '',
+					"Nama Balita": toddlers.find((t) => t.id === inspection.toddlerId)?.name || '',
+					"Tinggi (Centimeter)": inspection.height,
+					"Berat (Kilogram)": inspection.weight,
+					"Umur": getToddlerAgeText(inspection.toddlerId, inspection.date),
+					"Status Gizi": inspection.status,
+					"Catatan": inspection.notes,
+				});
+			})
+		);
+		const workbook = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet");
+		const excelBuffer = XLSX.write(workbook, {
+			bookType: "xlsx",
+			type: "array",
+		});
+		const blob = new Blob([excelBuffer], {
+			type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+		});
+		saveAs(blob, `Report Pemeriksaan Gizi.xlsx`);
+		showAlertToast('success', 'Laporan pemeriksaan berhasil diunduh');
+		setIsLoadingDownload(false);
+	}
+
   };
 
   const columns = React.useMemo(
@@ -59,22 +123,7 @@ export default function ReportFilePage() {
 		field: 'age',
 		headerName: 'Umur',
 		flex: 1,
-		valueGetter: (params) => {
-			const birthDay = new Date(toddlers.find((t) => t.id === params.row.toddlerId).birthDay);
-			const now = new Date(params.row.date);
-
-			if (!birthDay || !now) return "";
-
-			let year = now.getFullYear() - birthDay.getFullYear();
-			let month = now.getMonth() - birthDay.getMonth();
-
-			if (month < 0) {
-				year -= 1;
-				month += 12;
-			}
-
-			return `${year} Tahun ${month} Bulan`;
-		},
+		valueGetter: (params) => getToddlerAgeText(params.row.toddlerId,params.row.date)
 	},
 	{ field: 'status', headerName: 'Status Gizi', flex: 1 },
 	],
@@ -104,9 +153,7 @@ export default function ReportFilePage() {
 
   return (
 	<PageRoot>
-		<PageContentHeader title="Berkas Laporan" buttonText="Unduh Laporan" buttonAction={async () => {
-			//
-		}} buttonIconHidden />
+		<PageContentHeader title="Berkas Laporan" buttonText="Unduh Laporan" buttonAction={handleDownloadReport} buttonIconHidden />
 		<DataGrid
 			label="Data Pemeriksaan"
 			rows={inspections}
