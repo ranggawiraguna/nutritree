@@ -48,14 +48,16 @@ export default function ToddlerForm({value, onSubmitForm}) {
 	text: text
   });
 
-  const handleSubmitForm = React.useCallback(() => {
+  const handleSubmitForm = () => {
+	console.log(toddlerData, addressData);
+	console.log(toddlerData.nik && toddlerData.name && toddlerData.gender && toddlerData.birthDay && toddlerData.placeOfBirth && toddlerData.parentName && addressData.street && addressData.rt && addressData.rw && addressData.no && addressData.village && addressData.subDistrict && addressData.city && addressData.province);
 	if(toddlerData.nik && toddlerData.name && toddlerData.gender && toddlerData.birthDay && toddlerData.placeOfBirth && toddlerData.parentName && addressData.street && addressData.rt && addressData.rw && addressData.no && addressData.village && addressData.subDistrict && addressData.city && addressData.province) {
 		onSubmitForm({...toddlerData, address: addressData})
 	} else {
 	 	showAlertToast('warning', 'Silahkan lengkapi data balita terlebih dahulu');
 	}
 	// eslint-disable-next-line
-  }, []);
+  };
 
   React.useEffect(() => {
 	if (value) {

@@ -23,20 +23,14 @@ export default function BootstrapInput({title, type, value, setValueChanged}) {
 						slots={{
 							textField: (params) => (
 								<Box sx={{ position: "relative" }}>
-									<Component ref={params.inputRef} inputProps={{...params.inputProps, value: value ? dayjs(value).format("DD/MM/YYYY") : ""}} value={value ? dayjs(value).format("DD/MM/YYYY") : ""} />
-									<Box sx={{ 
-										position: "absolute", 
-										top: "50%",
-										transform: "translateY(-50%)",
-										right:15, 
-										width:28, 
-										height:28, 
-										display:"flex",
-										justifyContent: "center",
-										alignItems: "center",
-									}}>
-										{params.InputProps?.endAdornment}
-									</Box>
+									<Component 
+										ref={params.inputRef}
+										{...params.InputProps}
+										inputProps={{
+											...params.inputProps,
+											value: value ? dayjs(value).format("DD/MM/YYYY") : "",
+										}}
+									/>									
 								</Box>
 							),
 						}}
