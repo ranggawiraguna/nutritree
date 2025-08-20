@@ -68,6 +68,8 @@ export default function ToddlerViewPage() {
 			},
 		},
 		{ field: 'status', headerName: 'Status Gizi', flex: 1 },
+		{ field: 'statusStunting', headerName: 'Status Stunting', flex: 1 },
+		{ field: 'statusWasting', headerName: 'Status Wasting', flex: 1 },
     ],
     [toddler],
   );
@@ -225,9 +227,18 @@ export default function ToddlerViewPage() {
 								<Typography variant="h5" sx={{ fontWeight: "600" }}>Berat Badan (Kilogram)</Typography>
 								<Typography variant="p">{inspections[0]?.weight || "Tidak Ada"}</Typography>
 							</Grid>
+							<Grid item xs={12} sm={6} md={4}></Grid>
 							<Grid item xs={12} sm={6} md={4}>
 								<Typography variant="h5" sx={{ fontWeight: "600" }}>Status Gizi (Saat Ini)</Typography>
 								<Typography variant="p">{inspections[0]?.status || "Tidak Ada"}</Typography>
+							</Grid>
+							<Grid item xs={12} sm={6} md={4}>
+								<Typography variant="h5" sx={{ fontWeight: "600" }}>Status Stunting (Saat Ini)</Typography>
+								<Typography variant="p">{inspections[0]?.statusStunting || "Tidak Ada"}</Typography>
+							</Grid>
+							<Grid item xs={12} sm={6} md={4}>
+								<Typography variant="h5" sx={{ fontWeight: "600" }}>Status Wasting (Saat Ini)</Typography>
+								<Typography variant="p">{inspections[0]?.statusWasting || "Tidak Ada"}</Typography>
 							</Grid>
 							<Grid item xs={12}>
 								<Typography variant="h5" sx={{ fontWeight: "600" }}>Catatan</Typography>

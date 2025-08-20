@@ -30,12 +30,15 @@ export default function NutritionClassificationPage() {
 	date: null,
 	height: '',
 	weight: '',
-	status: '',
 	note: ''
   });
 
   const [toddlerSelected, setToddlerSelected] = React.useState({});
-  const [inspectionResult, setInspectionResult] = React.useState('');
+  const [inspectionResult, setInspectionResult] = React.useState({
+	status : '',
+	statusStunting : '',
+	statusWasting : '',
+  });
 
   const [drawerOpen, setDraweOpen] = React.useState(false);
   const [drawerLoading, setDraweLoading] = React.useState(true);
@@ -65,14 +68,22 @@ export default function NutritionClassificationPage() {
 	toggleDrawer(false);
   }
 
-  const handleInspectionAction = React.useCallback(() => {
-	setInspectionResult(["Normal", "Gizi Buruk", "Gizi Kurang", "Gizi Lebih"][Math.floor(Math.random() * 4)]);
-  },[])
+  const handleInspectionAction = () => {
+	if(toddlerSelected.id && inspectionForm.date && inspectionForm.height && inspectionForm.weight) {
+		setInspectionResult({
+			status : ["Gizi Baik", "Gizi Buruk", "Gizi Normal", "Gizi Lebih"][Math.floor(Math.random() * 4)],
+			statusStunting : ["Sangat Pendek", "Pendek", "Normal", "Tinggi"][Math.floor(Math.random() * 3)],
+			statusWasting : ["Sangat Kurus", "Kurus", "Normal", "Gemuk"][Math.floor(Math.random() * 3)]
+		});
+	} else {
+		showAlertToast('warning', 'Silahkan lengkapi data pemeriksaan terlebih dahulu');
+	}
+  }
 
   const handleSaveInspectionForm = () => {
 	if(!formloading){
 		setFormLoading(true);
-		if(toddlerSelected.id && inspectionForm.date && inspectionForm.height && inspectionForm.weight && inspectionResult){
+		if(toddlerSelected.id && inspectionForm.date && inspectionForm.height && inspectionForm.weight && inspectionResult.status) {
 			addDoc(collection(db, 'inspections'), ({
 				examinerId : accountReducer.id,
 				toddlerId: toddlerSelected.id,
@@ -80,7 +91,9 @@ export default function NutritionClassificationPage() {
 				height: inspectionForm.height,
 				weight: inspectionForm.weight,
 				notes: inspectionForm.note,
-				status: inspectionResult
+				status: inspectionResult.status,
+				statusStunting: inspectionResult.statusStunting,
+				statusWasting: inspectionResult.statusWasting,
 			})).catch((_) => {
 				showAlertToast('error', 'Terjadi kesalahan saat menambahkan data pemeriksaan');
 			}).then((_)=>{
@@ -93,7 +106,6 @@ export default function NutritionClassificationPage() {
 			});
 		} else {
 			showAlertToast('warning', 'Silahkan lengkapi data pemeriksaan terlebih dahulu');
-			showAlertToast('error', 'Terjadi kesalahan saat menambahkan data pemeriksaan');
 		}
 	}
 	// eslint-disable-next-line
@@ -264,12 +276,25 @@ export default function NutritionClassificationPage() {
 				<BootstrapInput value={inspectionForm["weight"]} setValueChanged={(_)=>handleChangeInspectionForm("weight",_)}/>
 			</Grid>
 			{
-				inspectionResult ? <>
+				inspectionResult.status ? <>
 					<Grid item xs={12} >
 						<Typography variant="h4" gutterBottom>
 							Hasil Pemeriksaan
 						</Typography>
-						<BootstrapInput readOnly value={inspectionResult} setValueChanged={(_)=>setInspectionResult(_)}/>
+						<Grid container rowGap={2} sx={{backgroundColor:'rgba(255,255,255,0.5)', border:"1px solid rgba(0,0,0,0.05)", borderRadius: 2, padding: 2 }}>
+							<Grid item xs={12} sm={6} md={4} sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+								<Typography variant='p' fontWeight="bold">Status Gizi :</Typography>
+								<Typography variant='p'>{inspectionResult.status}</Typography>
+							</Grid>
+							<Grid item xs={12} sm={6} md={4} sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+								<Typography variant='p' fontWeight="bold">Status Stunting :</Typography>
+								<Typography variant='p'>{inspectionResult.statusStunting}</Typography>
+							</Grid>
+							<Grid item xs={12} sm={6} md={4} sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+								<Typography variant='p' fontWeight="bold">Status Wasting :</Typography>
+								<Typography variant='p'>{inspectionResult.statusWasting}</Typography>
+							</Grid>
+						</Grid>
 					</Grid>
 					<Grid item xs={12} >
 						<Typography variant="h4" gutterBottom>

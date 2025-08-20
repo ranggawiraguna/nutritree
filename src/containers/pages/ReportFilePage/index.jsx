@@ -64,6 +64,8 @@ export default function ReportFilePage() {
 					"Berat (Kilogram)": inspection.weight,
 					"Umur": getToddlerAgeText(inspection.toddlerId, inspection.date),
 					"Status Gizi": inspection.status,
+					"Status Stunting": inspection.statusStunting,
+					"Status Wasting": inspection.statusWasting,
 					"Catatan": inspection.note,
 				});
 			})
@@ -126,6 +128,8 @@ export default function ReportFilePage() {
 			valueGetter: (params) => getToddlerAgeText(params.row.toddlerId,params.row.date)
 		},
 		{ field: 'status', headerName: 'Status Gizi', flex: 1 },
+		{ field: 'statusStunting', headerName: 'Status Stunting', flex: 1 },
+		{ field: 'statusWasting', headerName: 'Status Wasting', flex: 1 },
 	],
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	[toddlers],
