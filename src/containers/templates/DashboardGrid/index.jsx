@@ -10,7 +10,6 @@ import IconMarkQuestion from 'assets/images/icon/MarkQuestion.svg';
 import IconCardNoteInfo from 'assets/images/icon/DashboardCardNoteInfo.svg';
 import IconCardNote from 'assets/images/icon/DashboardCardNote.svg';
 import AutoSizeText from 'components/elements/AutoSizeText';
-import SelectOptionTimeline from 'components/elements/SelectOptionTimeline';
 import ChartSingle from 'components/elements/ChartSingle';
 import ChartMultiple from 'components/elements/ChartMultiple';
 import LayerOverlayDetail from 'components/elements/LayerOverlayDetail';
@@ -21,16 +20,14 @@ import { moneyFormatter } from 'utils/other/Services';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from 'config/database/firebase';
 
-export default function DashboardGrid({ sectionName, itemValues }) {
+export default function DashboardGrid({ itemValues }) {
   const accountReducer = useSelector((state) => state.accountReducer);
   const navigate = useNavigate();
 
+  const timelineValue = reverseTimelineValue(timelineValues[timeline[1].value], timeline[1].value)
+
   const [appVisits, setAppVisits] = useState([]);
   const [customers, setCustomers] = useState([]);
-
-  const [timelineValuesD, setTimelineValuesD] = useState(reverseTimelineValue(timelineValues[timeline[0].value], timeline[0].value));
-  const [timelineValuesH, setTimelineValuesH] = useState(reverseTimelineValue(timelineValues[timeline[0].value], timeline[0].value));
-  const [timelineValuesI, setTimelineValuesI] = useState(reverseTimelineValue(timelineValues[timeline[0].value], timeline[0].value));
 
   const [isOpenOptionItemB, setIsOpenOptionItemB] = useState(false);
   const [isOpenOptionItemC, setIsOpenOptionItemC] = useState(false);
@@ -38,43 +35,6 @@ export default function DashboardGrid({ sectionName, itemValues }) {
   const [isOpenLayerItemG, setIsOpenLayerItemG] = useState(false);
   const [isOpenLayerItemJ, setIsOpenLayerItemJ] = useState(false);
   const [isOpenLayerItemK, setIsOpenLayerItemK] = useState(false);
-
-  const getDataByTimeline = (timeline, data, reducer) => {
-    return timeline.map((_, index) => {
-      const currentDate = new Date();
-
-      let count = 0;
-      if (timeline.length === 10) {
-        count = reducer(
-          data.filter(
-            (element) =>
-              element.dateCreated.toDate() >= new Date(currentDate.getFullYear() - 9 + index, 0) &&
-              element.dateCreated.toDate() < new Date(currentDate.getFullYear() - 9 + index + 1, 0)
-          )
-        );
-      } else if (timeline.length === 12) {
-        count = reducer(
-          data.filter(
-            (element) =>
-              element.dateCreated.toDate() >= new Date(currentDate.getFullYear(), index) &&
-              element.dateCreated.toDate() < new Date(currentDate.getFullYear(), index + 1)
-          )
-        );
-      } else if (timeline.length === 7) {
-        count = reducer(
-          data.filter(
-            (element) =>
-              element.dateCreated.toDate() >=
-                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 6 + index) &&
-              element.dateCreated.toDate() <
-                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 6 + index + 1)
-          )
-        );
-      }
-
-      return count;
-    });
-  };
 
   useEffect(() => {
     const listenerAppVisits = onSnapshot(collection(db, 'appvisits'), (snapshot) =>
@@ -144,7 +104,7 @@ export default function DashboardGrid({ sectionName, itemValues }) {
                 </Button>
                 {isOpenOptionItemB ? (
                   <Box>
-                    <Button onClick={() => navigate(`/${sectionName}/${itemValues[0].path}`)}>Lihat Detail</Button>
+                    <Button onClick={() => navigate(`/${accountReducer.role}/${itemValues[0].path}`)}>Lihat Detail</Button>
                   </Box>
                 ) : null}
               </Box>
@@ -182,7 +142,7 @@ export default function DashboardGrid({ sectionName, itemValues }) {
                 </Button>
                 {isOpenOptionItemC ? (
                   <Box>
-                    <Button onClick={() => navigate(`/${sectionName}/${itemValues[1].path}`)}>Lihat Detail</Button>
+                    <Button onClick={() => navigate(`/${accountReducer.role}/${itemValues[1].path}`)}>Lihat Detail</Button>
                   </Box>
                 ) : (
                   <></>
@@ -213,29 +173,17 @@ export default function DashboardGrid({ sectionName, itemValues }) {
             </Typography>
           </Box>
           <Box gridArea="B"/>
-          <Box gridArea="C">
-            <SelectOptionTimeline onValueChanged={(value, timeline) => setTimelineValuesD(reverseTimelineValue(value, timeline))} />
-          </Box>
+          <Box gridArea="C"/>
           <Box gridArea="D">
            <ChartMultiple
             id={`Chart${itemValues[2].title.replace(' ', '')}`}
             type="line"
-            label={timelineValuesD}
-            datas={[
-              {
-                name: 'Produk',
-                data: getDataByTimeline(timelineValuesD, itemValues[2].datas[0], itemValues[2].reducer)
-              },
-              {
-                name: 'Pre-Order',
-                data: getDataByTimeline(timelineValuesD, itemValues[2].datas[1], itemValues[2].reducer)
-              },
-              {
-                name: 'Kutomisasi',
-                data: getDataByTimeline(timelineValuesD, itemValues[2].datas[2], itemValues[2].reducer)
-              }
-            ]}
-            notes={itemValues[2].notes}
+            label={timelineValue.slice(0,new Date().getMonth()+1).map((_)=>_.slice(0,3))}
+            datas={itemValues[2].notes.map((_)=> ({
+              name: _,
+              data:  timelineValue.slice(0,new Date().getMonth()+1).map((__,___)=>itemValues[2].datas.filter((data) => data.status === _).filter((data)=>new Date(data.date).getMonth()===___).length)
+            }))}
+            notes={itemValues[2].notes.map((_)=>_.replaceAll("Gizi ", ""))}
             colors={itemValues[2].colors}
           />
           </Box>
@@ -321,12 +269,22 @@ export default function DashboardGrid({ sectionName, itemValues }) {
           <Box gridArea="B"/>
           <Box gridArea="C">
             {
-              itemValues[5].data.length > 0 ? <ChartSingle
+              itemValues[5].data?.length > 0 ? <ChartSingle
                 id={`Chart${itemValues[5].title.replace(' ', '')}`}
                 type="pie"
-                label={itemValues[5].data.map((element) => element.name)}
-                data={itemValues[5].data.map((element) => element.amount)}
-                colors={['#B11900', '#e7ba3f', '#6DAFA7', '#7BA7FF', '#B05AF3']}
+                label={["Balita Awal", "Balita Menengah", "Balita Lanjutan"]}
+                data={[6,12,60].map(
+                  (_)=>itemValues[5].data.filter((d)=>{
+                    if (!d.birthDay) return false;
+
+                    const birthDay = new Date(d.birthDay);
+                    const now = new Date();
+                    const ageInMonths = (now.getFullYear() - birthDay.getFullYear()) * 12 + (now.getMonth() - birthDay.getMonth());
+
+                    return  ageInMonths <= _;
+                  }).length
+              )}
+                colors={itemValues[5].colors}
               /> : <></>
             }
           </Box>
@@ -338,8 +296,9 @@ export default function DashboardGrid({ sectionName, itemValues }) {
           <LayerOverlayDetail
             isOpen={isOpenLayerItemG}
             onClose={() => setIsOpenLayerItemG(false)}
-            label={itemValues[5].data.map((element) => element.name)}
-            colors={['#B11900', '#e7ba3f', '#6DAFA7', '#7BA7FF', '#B05AF3']}
+            label={["Balita Awal", "Balita Menengah", "Balita Lanjutan"]}
+            description={["Balita yang berumur antara 0-6 bulan", "Balita yang berumur antara 7-12 bulan", "Balita yang berumur antara 1-5 tahun"]}
+            colors={['#B11900', '#e7ba3f', '#6DAFA7' ]}
           />
         </Box>
       </Box>
@@ -351,28 +310,34 @@ export default function DashboardGrid({ sectionName, itemValues }) {
             </Typography>
           </Box>
           <Box gridArea="B"/>
-          <Box gridArea="C">
-            <SelectOptionTimeline onValueChanged={(value, timeline) => setTimelineValuesH(reverseTimelineValue(value, timeline))} />
-          </Box>
+          <Box gridArea="C"/>
           <Box gridArea="D">
             <ChartMultiple
               id={`Chart${itemValues[6].title.replace(' ', '')}`}
               type="line"
-              label={timelineValuesH}
-              datas={[
-                {
-                  name: '0-6 Bulan',
-                  data: getDataByTimeline(timelineValuesH, itemValues[6].datas[0], itemValues[2].reducer)
-                },
-                {
-                  name: '1-7 Bulan',
-                  data: getDataByTimeline(timelineValuesH, itemValues[6].datas[1], itemValues[2].reducer)
-                },
-                {
-                  name: '1-5 Tahun',
-                  data: getDataByTimeline(timelineValuesH, itemValues[6].datas[2], itemValues[2].reducer)
-                }
-              ]}
+              label={timelineValue.slice(0,new Date().getMonth()+1).map((_)=>_.slice(0,3))}
+              datas={[{
+                name : '0-6 Bulan',
+                index : 6
+              },{
+                name : '7-12 Bulan',
+                index : 7
+              },{
+                name : '1-5 Tahun',
+                index : 60
+              }].map((section)=>({
+                name :section.name,
+                data : timelineValue.slice(0,new Date().getMonth()+1).map((_,__)=>itemValues[6].datas.filter(
+                  (_)=>{
+                    if (!_.birthDay) return false;
+
+                    const birthDay = new Date(_.birthDay);
+                    const now = new Date();
+                    const ageInMonths = (now.getFullYear() - birthDay.getFullYear()) * 12 + (now.getMonth() - birthDay.getMonth());
+
+                    return new Date(_.date).getMonth() === __ && ageInMonths <= section.index;
+                  }).length
+              )}))}
               notes={itemValues[6].notes}
               colors={itemValues[6].colors}
             />
@@ -380,7 +345,7 @@ export default function DashboardGrid({ sectionName, itemValues }) {
         </Box>
       </Box>
       {
-        accountReducer.role === 'admin' ? <>
+        accountReducer.role === 'soon' ? <>
         <Box gridArea="I">
           <Box className="dashboard-item">
             <Box gridArea="A">
@@ -389,15 +354,13 @@ export default function DashboardGrid({ sectionName, itemValues }) {
               </Typography>
             </Box>
             <Box gridArea="B"/>
-            <Box gridArea="C">
-              <SelectOptionTimeline onValueChanged={(value, timeline) => setTimelineValuesI(reverseTimelineValue(value, timeline))} />
-            </Box>
+            <Box gridArea="C"/>
             <Box gridArea="D">
               <ChartSingle
                 id={`ChartKunjunganAplikasi`}
                 type="bar"
-                label={timelineValuesI}
-                data={getDataByTimeline(timelineValuesI, appVisits, (dataFilter) => dataFilter.length)}
+                label={timelineValue.slice(0,new Date().getMonth()+1).map((_)=>_.slice(0,3))}
+                data={[]}
                 color="#FFD43C"
               />
             </Box>
@@ -412,15 +375,15 @@ export default function DashboardGrid({ sectionName, itemValues }) {
             </Box>
             <Box gridArea="B">
               {
-                customers.length > 0 ? <ChartSingle
+                customers?.length > 0 ? <ChartSingle
                 id={`ChartPenggunaTerdaftar`}
                 type="pie"
                 label={['Pengguna Baru', 'Pengguna Lama']}
                 data={[
                   customers.filter((customer) => customer.dateCreated.toDate() >= new Date(new Date().setDate(new Date().getDate() - 30)))
-                    .length,
+                    ?.length,
                   customers.filter((customer) => customer.dateCreated.toDate() < new Date(new Date().setDate(new Date().getDate() - 30)))
-                    .length
+                    ?.length
                 ]}
                 colors={['#B05AF3', '#7BA7FF']}
               /> : <></>
@@ -464,7 +427,7 @@ export default function DashboardGrid({ sectionName, itemValues }) {
             </Box>
             <Box gridArea="B">
               {
-                appVisits.length > 0 ? <ChartSingle
+                appVisits?.length > 0 ? <ChartSingle
                   id={`ChartStatusPetugas`}
                   type="pie"
                   label={['Petugas Aktif', 'Petugas Nonaktif']}

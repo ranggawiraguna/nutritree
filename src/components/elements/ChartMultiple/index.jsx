@@ -31,7 +31,7 @@ export default function ChartMultiple({ id, label, type, datas, notes, colors })
             xaxis: { categories: label },
             colors: colors,
             stroke: type === "line" ? {
-              curve: 'smooth'
+              curve: 'straight'
             } : {},
           }}
           series={datas}
