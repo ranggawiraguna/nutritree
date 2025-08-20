@@ -72,6 +72,22 @@ export default function ToddlerViewPage() {
     [toddler],
   );
 
+  const getGraphicLabel = () => {
+	return inspections.map((inspection) => {
+		const birthDay = new Date(toddler.birthDay);
+		const now = new Date(inspection.date);
+
+		if (!birthDay || !now) return "";
+
+		let year = now.getFullYear() - birthDay.getFullYear();
+		let month = now.getMonth() - birthDay.getMonth();
+
+		return year * 12 + month;
+	}).reverse();
+  }
+
+  console.log(getGraphicLabel())
+
   const InformationTextGroup = ({title, description, size}) => {
 	return (
 		<Grid item xs={size["xs"]} md={size["md"]}>
@@ -155,9 +171,12 @@ export default function ToddlerViewPage() {
 							<ChartSingle
 								id={`ChartTinggiBadan`}
 								type="bar"
-								label={[]}
-								data={[]}
-								color="#FFD43C"
+								name="Tinggi"
+								xtitle="Usia Balita (Bulan)"
+								ytitle="Tinggi Badan (Centimeter)"
+								label={getGraphicLabel()}
+								data={inspections.map((inspection) => inspection.height).reverse()}
+								color="#359AFF"
 							/>
 						</Box>
 					</Box>
@@ -178,9 +197,12 @@ export default function ToddlerViewPage() {
 							<ChartSingle
 								id={`ChartTinggiBadan`}
 								type="bar"
-								label={[]}
-								data={[]}
-								color="#FFD43C"
+								name="Berat"
+								xtitle="Usia Balita (Bulan)"
+								ytitle="Berat Badan (Centimeter)"
+								label={getGraphicLabel()}
+								data={inspections.map((inspection) => inspection.weight).reverse()}
+								color="#6DAFA7"
 							/>
 						</Box>
 					</Box>
@@ -198,20 +220,20 @@ export default function ToddlerViewPage() {
 						<Typography variant="h4" sx={{ marginBottom: 1 }}>Pemeriksaan Terakhir</Typography>
 						<Grid container rowSpacing={2}>
 							<Grid item xs={12} sm={6} md={4}>
-								<Typography variant="h5" sx={{ fontWeight: "600" }}>Tinggi Badan</Typography>
-								<Typography variant="p">15 Centimeter</Typography>
+								<Typography variant="h5" sx={{ fontWeight: "600" }}>Tinggi Badan (Centimeter)</Typography>
+								<Typography variant="p">{inspections[0]?.height || "Tidak Ada"}</Typography>
 							</Grid>
 							<Grid item xs={12} sm={6} md={4}>
-								<Typography variant="h5" sx={{ fontWeight: "600" }}>Berat Badan</Typography>
-								<Typography variant="p">37 Kilogram</Typography>
+								<Typography variant="h5" sx={{ fontWeight: "600" }}>Berat Badan (Kilogram)</Typography>
+								<Typography variant="p">{inspections[0]?.weight || "Tidak Ada"}</Typography>
 							</Grid>
 							<Grid item xs={12} sm={6} md={4}>
-								<Typography variant="h5" sx={{ fontWeight: "600" }}>Status Gizi</Typography>
-								<Typography variant="p">Sehat</Typography>
+								<Typography variant="h5" sx={{ fontWeight: "600" }}>Status Gizi (Saat Ini)</Typography>
+								<Typography variant="p">{inspections[0]?.status || "Tidak Ada"}</Typography>
 							</Grid>
 							<Grid item xs={12}>
-								<Typography variant="h5" sx={{ fontWeight: "600" }}>Catatan Terakhir</Typography>
-								<Typography variant="p">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam nostrum dolores adipisci, molestias eligendi vero voluptatem qui saepe labore tempore quaerat culpa eveniet dolore eum dolorem ex officiis alias cupiditate!</Typography>
+								<Typography variant="h5" sx={{ fontWeight: "600" }}>Catatan</Typography>
+								<Typography variant="p">{inspections[0]?.notes || "Tidak Ada"}</Typography>
 							</Grid>
 						</Grid>
 					</Box>

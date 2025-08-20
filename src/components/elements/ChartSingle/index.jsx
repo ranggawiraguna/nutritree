@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import { Box } from '@mui/material';
 import Chart from 'react-apexcharts';
 
-export default function ChartSingle({ id, type, label, data, stroke, largeSize, color, colors }) {
+export default function ChartSingle({ id, type, name, xtitle, ytitle, label, data, stroke, largeSize, color, colors }) {
   return (
     <Fragment>
       <Box sx={{ minHeight: 'calc(100% - 10px)' }}>
@@ -26,7 +26,14 @@ export default function ChartSingle({ id, type, label, data, stroke, largeSize, 
                   chart: {
                     id: id
                   },
-                  xaxis: { categories: label },
+                  plotOptions: {
+                    bar: {
+                      borderRadius: 6,  
+                      horizontal: false,
+                    }
+                  },
+                  xaxis: { title: { text: xtitle ?? "", style: { fontFamily:'Folks', fontWeight: 400 } } , categories: label },
+                  yaxis: { title: { text: ytitle ?? "", style: { fontFamily:'Folks', fontWeight: 400 } } },
                   markers: {
                     size: 6,
                     strokeColors: '#B7B7B7',
@@ -46,7 +53,7 @@ export default function ChartSingle({ id, type, label, data, stroke, largeSize, 
                     : {}
                 }
           }
-          series={type === 'pie' ? data : [{ name: 'Jumlah', data: data }]}
+          series={type === 'pie' ? data : [{ name: name || 'Jumlah', data: data }]}
           type={type}
           height={type === 'pie' ? (largeSize ? '225' : '200') : '250'}
         />
