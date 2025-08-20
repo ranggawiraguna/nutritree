@@ -39,6 +39,23 @@ export default function ToddlerForm({value, onSubmitForm}) {
 	text: '',
 	transitionName: 'slideUp'
   });
+	
+  const showAlertToast = (type, text) =>
+	setAlertDescription({
+	...alertDescription,
+	isOpen: true,
+	type: type,
+	text: text
+  });
+
+  const handleSubmitForm = React.useCallback(() => {
+	if(toddlerData.nik && toddlerData.name && toddlerData.gender && toddlerData.birthDay && toddlerData.placeOfBirth && toddlerData.parentName && addressData.street && addressData.rt && addressData.rw && addressData.no && addressData.village && addressData.subDistrict && addressData.city && addressData.province) {
+		onSubmitForm({...toddlerData, address: addressData})
+	} else {
+	 	showAlertToast('warning', 'Silahkan lengkapi data balita terlebih dahulu');
+	}
+	// eslint-disable-next-line
+  }, []);
 
   React.useEffect(() => {
 	if (value) {
@@ -51,7 +68,7 @@ export default function ToddlerForm({value, onSubmitForm}) {
   return (
 	<Fragment>
 	  <PageRoot>
-		<PageContentHeader title="Form Tambah Balita" buttonText="Simpan Data" buttonAction={()=>onSubmitForm({...toddlerData, address: addressData})} />
+		<PageContentHeader title="Form Tambah Balita" buttonText="Simpan Data" buttonAction={handleSubmitForm} />
 		<Box sx={{
 			backgroundColor: 'rgba(255,255,255,0.75)', 
 			padding: 2, 

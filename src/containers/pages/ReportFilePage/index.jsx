@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PageRoot from './styled';
 import PageContentHeader from 'components/elements/PageContentHeader';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from 'config/database/firebase';
 
 export default function ReportFilePage() {
@@ -86,7 +86,7 @@ export default function ReportFilePage() {
 		setToddlers(snapshot.docs.map((document) => ({ id: document.id, ...document.data() })));
 	});
 
-	const listenerInspections = onSnapshot(collection(db, 'inspections'), (snapshot) => {
+	const listenerInspections = onSnapshot(query(collection(db, "inspections"), orderBy("date", "desc")), (snapshot) => {
 		setInspections(snapshot.docs.map((document) => ({ id: document.id, ...document.data() })));
 		setIsLoading(false);
 	});

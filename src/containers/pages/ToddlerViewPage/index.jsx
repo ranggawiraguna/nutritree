@@ -8,7 +8,7 @@ import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router';
 import ChartSingle from 'components/elements/ChartSingle';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
-import { collection, doc, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, doc, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { db } from 'config/database/firebase';
 import { dateFormatter, getAddress, getAgeText, getGenderText } from 'utils/other/Services';
 
@@ -93,7 +93,7 @@ export default function ToddlerViewPage() {
 	const listenerToddlers = onSnapshot(doc(db, 'toddlers', params.id), (snapshot) => {
       setToddler(snapshot.data());
     });
-	const listenerInspections = onSnapshot(query(collection(db, 'inspections'), where('toddlerId', '==', params.id)), (snapshot) => {
+	const listenerInspections = onSnapshot(query(collection(db, 'inspections'), where('toddlerId', '==', params.id), orderBy("date", "desc")), (snapshot) => {
 		setInspections(snapshot.docs.map((document) => ({ id: document.id, ...document.data() })));
 		setInspectionLoading(false);
 	});

@@ -49,7 +49,7 @@ export default function NutritionClassificationPage() {
 	transitionName: 'slideUp'
   });
   
-const showAlertToast = (type, text) =>
+  const showAlertToast = (type, text) =>
 	setAlertDescription({
 	...alertDescription,
 	isOpen: true,
@@ -65,30 +65,40 @@ const showAlertToast = (type, text) =>
 	setToddlerSelected({ id: value.id, ...value.row });
 	toggleDrawer(false);
   }
+
+  const handleInspectionAction = React.useCallback(() => {
+	setInspectionResult(["Normal", "Gizi Buruk", "Gizi Kurang", "Gizi Lebih"][Math.floor(Math.random() * 4)]);
+  },[])
+
   const handleSaveInspectionForm = React.useCallback(() => {
 	if(!formloading){
-	setFormLoading(true);
-	addDoc(collection(db, 'inspections'), ({
-	  examinerId : accountReducer.id,
-	  toddlerId: toddlerSelected.id ?? "",
-	  date: inspectionForm.date,
-	  height: inspectionForm.height,
-	  weight: inspectionForm.weight,
-	  status: inspectionForm.status,
-	  notes: inspectionForm.notes,
-	})).catch((_) => {
-		showAlertToast('error', 'Terjadi kesalahan saat menambahkan data pemeriksaan');
-	}).then((_)=>{
-		showAlertToast('success', 'Data pemeriksaan berhasil disimpan');
-		setTimeout(() => {
-		navigate(`/${accountReducer.role}/berkas-laporan`);
-		}, 2000);
-	}).finally(() => {
-		setFormLoading(false);
-	});
+		setFormLoading(true);
+		if(toddlerSelected.id && inspectionForm.date && inspectionForm.height && inspectionForm.weight && inspectionResult){
+			addDoc(collection(db, 'inspections'), ({
+				examinerId : accountReducer.id,
+				toddlerId: toddlerSelected.id,
+				date: inspectionForm.date,
+				height: inspectionForm.height,
+				weight: inspectionForm.weight,
+				status: inspectionForm.status,
+				notes: inspectionForm.notes,
+			})).catch((_) => {
+				showAlertToast('error', 'Terjadi kesalahan saat menambahkan data pemeriksaan');
+			}).then((_)=>{
+				showAlertToast('success', 'Data pemeriksaan berhasil disimpan');
+				setTimeout(() => {
+					navigate(`/${accountReducer.role}/berkas-laporan`);
+				}, 2000);
+			}).finally(() => {
+				setFormLoading(false);
+			});
+		} else {
+			showAlertToast('warning', 'Silahkan lengkapi data pemeriksaan terlebih dahulu');
+			showAlertToast('error', 'Terjadi kesalahan saat menambahkan data pemeriksaan');
+		}
 	}
 	// eslint-disable-next-line
-}, []);
+  }, []);
 
   const InformationTextGroup = ({title, description, size}) => {
 	return (
@@ -175,7 +185,7 @@ const showAlertToast = (type, text) =>
 
   return (
 	<PageRoot>
-		<PageContentHeader title="Klasifikasi Gizi" buttonIconHidden buttonText="Periksa Hasil" buttonAction={()=>{setInspectionResult("Status Gizi : Baik")}} />
+		<PageContentHeader title="Klasifikasi Gizi" buttonIconHidden buttonText="Periksa Hasil" buttonAction={handleInspectionAction}/>
 		<Grid container spacing={2}>
 			<Grid item xs={12} sm={6}>
 				<Typography variant="h4" gutterBottom>
