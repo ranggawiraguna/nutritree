@@ -140,6 +140,8 @@ const defaultItemPhoto =
 
 const sizeAvailable = ['XL', 'L', 'M', 'S'];
 
+const colors = ['#B11900', '#6DAFA7', '#359AFF', "#a73cffff", "#FFD43C", "#ff9a3cff"]
+
 export {
   tableDisplayType,
   orderType,
@@ -151,5 +153,6 @@ export {
   productCategory,
   defaultProductPhoto,
   defaultItemPhoto,
-  sizeAvailable
+  sizeAvailable,
+  colors
 };

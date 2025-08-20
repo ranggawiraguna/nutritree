@@ -86,8 +86,6 @@ export default function ToddlerViewPage() {
 	}).reverse();
   }
 
-  console.log(getGraphicLabel())
-
   const InformationTextGroup = ({title, description, size}) => {
 	return (
 		<Grid item xs={size["xs"]} md={size["md"]}>

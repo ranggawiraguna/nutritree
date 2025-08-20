@@ -87,46 +87,47 @@ export default function ReportFilePage() {
   const columns = React.useMemo(
 	() => [
 		{
-		field: 'no',
-		headerName: 'No.',	
-		sortable: false,
-		filterable: false,
-		valueGetter: (params) => params.api.getRowIndex(params.row.id) + 1,
-	},
-	{
-		field: 'date',
-		headerName: 'Tanggal',
-		type: 'date',
-		flex: 1,
-		valueGetter: (params) => params.value ? new Date(params.value) : null,
-		valueFormatter: (params) => {
-			if (!params.value) return '';
-			const day = new Date(params.value);
-			return `${String(day.getDate()).padStart(2, '0')}/${String(day.getMonth() + 1).padStart(2, '0')}/${day.getFullYear()}`;
+			field: 'no',
+			headerName: 'No.',	
+			sortable: false,
+			filterable: false,
+			valueGetter: (params) => params.api.getRowIndex(params.row.id) + 1,
 		},
-	},
-	{ 
-		field: 'name',
-		headerName: 'Nama Balita', 
-		flex: 1,
-		valueGetter: (params) => toddlers.find((t) => t.id === params.row.toddlerId)?.name || ''
-	},
-	{ 
-		field: 'nik',
-		headerName: 'NIK', 
-		flex: 1,
-		valueGetter: (params) => toddlers.find((t) => t.id === params.row.toddlerId)?.nik || ''
-	},
-	{ field: 'height', headerName: 'Tinggi Badan', flex: 1 },
-	{ field: 'weight', headerName: 'Berat Badan', flex: 1 },
-	{
-		field: 'age',
-		headerName: 'Umur',
-		flex: 1,
-		valueGetter: (params) => getToddlerAgeText(params.row.toddlerId,params.row.date)
-	},
-	{ field: 'status', headerName: 'Status Gizi', flex: 1 },
+		{
+			field: 'date',
+			headerName: 'Tanggal',
+			type: 'date',
+			flex: 1,
+			valueGetter: (params) => params.value ? new Date(params.value) : null,
+			valueFormatter: (params) => {
+				if (!params.value) return '';
+				const day = new Date(params.value);
+				return `${String(day.getDate()).padStart(2, '0')}/${String(day.getMonth() + 1).padStart(2, '0')}/${day.getFullYear()}`;
+			},
+		},
+		{ 
+			field: 'name',
+			headerName: 'Nama Balita', 
+			flex: 1,
+			valueGetter: (params) => toddlers.find((t) => t.id === params.row.toddlerId)?.name || ''
+		},
+		{ 
+			field: 'nik',
+			headerName: 'NIK', 
+			flex: 1,
+			valueGetter: (params) => toddlers.find((t) => t.id === params.row.toddlerId)?.nik || ''
+		},
+		{ field: 'height', headerName: 'Tinggi Badan', flex: 1 },
+		{ field: 'weight', headerName: 'Berat Badan', flex: 1 },
+		{
+			field: 'age',
+			headerName: 'Umur',
+			flex: 1,
+			valueGetter: (params) => getToddlerAgeText(params.row.toddlerId,params.row.date)
+		},
+		{ field: 'status', headerName: 'Status Gizi', flex: 1 },
 	],
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	[toddlers],
 );
 

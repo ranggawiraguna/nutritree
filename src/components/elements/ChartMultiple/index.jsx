@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import { Box, Typography } from '@mui/material';
 import Chart from 'react-apexcharts';
 
-export default function ChartMultiple({ id, label, datas, notes, colors }) {
+export default function ChartMultiple({ id, label, type, datas, notes, colors }) {
   return (
     <Fragment>
       <Box sx={{ minHeight: 'calc(100% - 50px)' }}>
@@ -11,11 +11,17 @@ export default function ChartMultiple({ id, label, datas, notes, colors }) {
             chart: {
               id: id
             },
-            markers: {
+            plotOptions: {
+              bar: {
+                borderRadius: 2,                  
+                horizontal: false,
+              }
+            },
+            markers: type === "line" ? {
               size: 6,
               strokeColors: '#B7B7B7',
               strokeWidth: 2
-            },
+            } : {},
             dataLabels: {
               enabled: false
             },
@@ -23,16 +29,19 @@ export default function ChartMultiple({ id, label, datas, notes, colors }) {
               show: false
             },
             xaxis: { categories: label },
-            colors: colors
+            colors: colors,
+            stroke: type === "line" ? {
+              curve: 'smooth'
+            } : {},
           }}
           series={datas}
-          type="line"
+          type={type ?? "line"}
           height="250"
         />
       </Box>
       <Box
         sx={{
-          position: 'sticky',
+          position: 'relative',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'flex-start',
@@ -46,7 +55,7 @@ export default function ChartMultiple({ id, label, datas, notes, colors }) {
       >
         {notes.map((note, index) => {
           return (
-            <Box key={index} sx={{ display: 'flex', gap: { xs: '8px', sm: '10px' }, alignItems: 'center' }}>
+            <Box key={index} sx={{ display: 'flex', gap: { xs: '8px', sm: '10px' }, alignItems: 'center', transform: 'translateY(-10px)', }}>
               <Box
                 sx={{
                   backgroundColor: colors[index],
