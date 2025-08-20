@@ -28,10 +28,10 @@ export default function NutritionClassificationPage() {
 
   const [inspectionForm, setInspectionForm] = React.useState({
 	examiner : accountReducer.fullname,
-	examDate: null,
+	date: null,
 	height: '',
 	weight: '',
-	examinationResult: '',
+	status: '',
 	notes: ''
   });
 
@@ -71,10 +71,10 @@ const showAlertToast = (type, text) =>
 	addDoc(collection(db, 'inspections'), ({
 	  examinerId : accountReducer.id,
 	  toddlerId: toddlerSelected.id ?? "",
-	  examDate: inspectionForm.examDate,
+	  date: inspectionForm.date,
 	  height: inspectionForm.height,
 	  weight: inspectionForm.weight,
-	  examinationResult: inspectionForm.examinationResult,
+	  status: inspectionForm.status,
 	  notes: inspectionForm.notes,
 	})).catch((_) => {
 		showAlertToast('error', 'Terjadi kesalahan saat menambahkan data pemeriksaan');
@@ -114,7 +114,11 @@ const showAlertToast = (type, text) =>
 		},
 		{ field: 'nik', headerName: 'NIK', flex: 1 },
 		{ field: 'name', headerName: 'Nama', flex: 1 },
-		{ field: 'gender', headerName: 'Jenis Kelamin', flex: 1 },
+		{ 
+			field: 'gender', 
+			headerName: 'Jenis Kelamin', 
+			flex: 1 
+		},
 		{
 			field: 'birthDay',
 			headerName: 'Tanggal Lahir',

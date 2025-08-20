@@ -13,6 +13,7 @@ export default function ReportFilePage() {
   const sidebarReducer = useSelector((state) => state.sidebarReducer);
 
   const [isLoading, setIsLoading] = React.useState(true);
+  const [toddlers, setToddlers] = React.useState([]);
   const [inspections, setInspections] = React.useState([]);
 
   const columns = React.useMemo(
@@ -36,7 +37,18 @@ export default function ReportFilePage() {
 			return `${String(day.getDate()).padStart(2, '0')}/${String(day.getMonth() + 1).padStart(2, '0')}/${day.getFullYear()}`;
 		},
 	},
-	{ field: 'name', headerName: 'Nama Balita (NIK)', flex: 1 },
+	{ 
+		field: 'name',
+		headerName: 'Nama Balita', 
+		flex: 1,
+		valueGetter: (params) => toddlers.find((t) => t.id === params.row.toddlerId)?.name || ''
+	},
+	{ 
+		field: 'nik',
+		headerName: 'NIK', 
+		flex: 1,
+		valueGetter: (params) => toddlers.find((t) => t.id === params.row.toddlerId)?.nik || ''
+	},
 	{ field: 'height', headerName: 'Tinggi Badan', flex: 1 },
 	{ field: 'weight', headerName: 'Berat Badan', flex: 1 },
 	{
@@ -44,10 +56,10 @@ export default function ReportFilePage() {
 		headerName: 'Umur',
 		flex: 1,
 		valueGetter: (params) => {
-			if (!params.row.birthDay) return "";
-			
-			const birthDay = new Date(params.row.birthDay);
-			const now = new Date();
+			const birthDay = new Date(toddlers.find((t) => t.id === params.row.toddlerId).birthDay);
+			const now = new Date(params.row.date);
+
+			if (!birthDay || !now) return "";
 
 			let year = now.getFullYear() - birthDay.getFullYear();
 			let month = now.getMonth() - birthDay.getMonth();
@@ -62,7 +74,7 @@ export default function ReportFilePage() {
 	},
 	{ field: 'status', headerName: 'Status Gizi', flex: 1 },
 	],
-	[],
+	[toddlers],
 );
 
   useEffect(() => {
@@ -70,12 +82,17 @@ export default function ReportFilePage() {
 		dispatch({ type: MENU_OPEN, id: 'report' });
 	}
 
+	const listenerToddlers = onSnapshot(collection(db, 'toddlers'), (snapshot) => {
+		setToddlers(snapshot.docs.map((document) => ({ id: document.id, ...document.data() })));
+	});
+
 	const listenerInspections = onSnapshot(collection(db, 'inspections'), (snapshot) => {
 		setInspections(snapshot.docs.map((document) => ({ id: document.id, ...document.data() })));
 		setIsLoading(false);
 	});
 
 	return () => {
+		listenerToddlers();
 		listenerInspections();
 	};
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -83,7 +100,9 @@ export default function ReportFilePage() {
 
   return (
 	<PageRoot>
-		<PageContentHeader title="Berkas Laporan" buttonText="Unduh Laporan" buttonAction={()=>{}} buttonIconHidden />
+		<PageContentHeader title="Berkas Laporan" buttonText="Unduh Laporan" buttonAction={async () => {
+			//
+		}} buttonIconHidden />
 		<DataGrid
 			label="Data Pemeriksaan"
 			rows={inspections}

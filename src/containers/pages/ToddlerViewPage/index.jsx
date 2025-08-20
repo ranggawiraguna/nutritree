@@ -51,10 +51,10 @@ export default function ToddlerViewPage() {
 			headerName: 'Umur',
 			flex: 1,
 			valueGetter: (params) => {
-				if (!params.row.birthDay) return "";
-				
-				const birthDay = new Date(params.row.birthDay);
-				const now = new Date();
+				const birthDay = new Date(toddler.birthDay);
+				const now = new Date(params.row.date);
+
+				if (!birthDay || !now) return "";
 
 				let year = now.getFullYear() - birthDay.getFullYear();
 				let month = now.getMonth() - birthDay.getMonth();
@@ -69,7 +69,7 @@ export default function ToddlerViewPage() {
 		},
 		{ field: 'status', headerName: 'Status Gizi', flex: 1 },
     ],
-    [],
+    [toddler],
   );
 
   const InformationTextGroup = ({title, description, size}) => {
