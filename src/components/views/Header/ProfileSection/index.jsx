@@ -140,14 +140,14 @@ export default function ProfileSection() {
         ref={anchorRef}
         aria-controls={open ? 'menu-list-grow' : undefined}
         aria-haspopup="true"
-        onClick={handleToggle}
+        onClick={handleLogout}
         color="primary"
       />
       <Popper
         placement="bottom-end"
         open={open}
         anchorEl={anchorRef.current}
-        role={undefined}
+        role={accountReducer.role}
         transition
         disablePortal
         popperOptions={{

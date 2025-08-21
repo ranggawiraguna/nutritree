@@ -8,14 +8,22 @@ import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from 'config/database/firebase';
 import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { saveAs } from "file-saver";
+import { Box, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography, useMediaQuery } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { useTheme } from '@emotion/react';
 
 export default function ReportFilePage() {
   const dispatch = useDispatch();
   const sidebarReducer = useSelector((state) => state.sidebarReducer);
 
   const [isLoading, setIsLoading] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [isLoadingDownload, setIsLoadingDownload] = React.useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [toddlers, setToddlers] = React.useState([]);
   const [inspections, setInspections] = React.useState([]);
   const [alertDescription, setAlertDescription] = React.useState({
@@ -50,36 +58,70 @@ export default function ReportFilePage() {
 	return `${year} Tahun ${month} Bulan`;
   }
 
-  const handleDownloadReport = async () => {
+  const handleDownloadReport = async (format) => {
 	if(!isLoadingDownload){
 		setIsLoadingDownload(true);
-		const worksheet = XLSX.utils.json_to_sheet(
-			inspections.map((inspection) => {
-				const date = new Date(inspection.date);
-				return ({
-					"Tanggal Pemeriksaan": `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`,
-					"NIK Balita": toddlers.find((t) => t.id === inspection.toddlerId)?.nik || '',
-					"Nama Balita": toddlers.find((t) => t.id === inspection.toddlerId)?.name || '',
-					"Tinggi (Centimeter)": inspection.height,
-					"Berat (Kilogram)": inspection.weight,
-					"Umur": getToddlerAgeText(inspection.toddlerId, inspection.date),
-					"Status Gizi": inspection.status,
-					"Status Stunting": inspection.statusStunting,
-					"Status Wasting": inspection.statusWasting,
-					"Catatan": inspection.note,
-				});
-			})
-		);
-		const workbook = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet");
-		const excelBuffer = XLSX.write(workbook, {
-			bookType: "xlsx",
-			type: "array",
-		});
-		const blob = new Blob([excelBuffer], {
-			type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-		});
-		saveAs(blob, `Report Pemeriksaan Gizi.xlsx`);
+		const rows = inspections.map((inspection) => {
+			const date = new Date(inspection.date);
+			return ({
+				"Tanggal Pemeriksaan": `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`,
+				"NIK Balita": toddlers.find((t) => t.id === inspection.toddlerId)?.nik || '',
+				"Nama Balita": toddlers.find((t) => t.id === inspection.toddlerId)?.name || '',
+				"Tinggi (Centimeter)": inspection.height,
+				"Berat (Kilogram)": inspection.weight,
+				"Umur": getToddlerAgeText(inspection.toddlerId, inspection.date),
+				"Status Gizi": inspection.status,
+				"Status Stunting": inspection.statusStunting,
+				"Status Wasting": inspection.statusWasting,
+				"Catatan": inspection.note,
+			});
+		})
+
+		if(format==="pdf") {
+			const doc = new jsPDF();
+	
+			const columns = Object.keys(rows[0]); 
+			const body = rows.map(row => columns.map(col => row[col]));
+	
+			doc.text("Data Export", 14, 10);
+	
+			autoTable(doc, {
+				head: [columns],
+				body: body,
+				startY: 20,
+				styles: { fontSize: 8 }
+			});
+	
+			doc.save("Report Pemeriksaan Gizi.pdf");
+		} else {
+			const worksheet = XLSX.utils.json_to_sheet(
+				inspections.map((inspection) => {
+					const date = new Date(inspection.date);
+					return ({
+						"Tanggal Pemeriksaan": `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`,
+						"NIK Balita": toddlers.find((t) => t.id === inspection.toddlerId)?.nik || '',
+						"Nama Balita": toddlers.find((t) => t.id === inspection.toddlerId)?.name || '',
+						"Tinggi (Centimeter)": inspection.height,
+						"Berat (Kilogram)": inspection.weight,
+						"Umur": getToddlerAgeText(inspection.toddlerId, inspection.date),
+						"Status Gizi": inspection.status,
+						"Status Stunting": inspection.statusStunting,
+						"Status Wasting": inspection.statusWasting,
+						"Catatan": inspection.note,
+					});
+				})
+			);
+			const workbook = XLSX.utils.book_new();
+			XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet");
+			const excelBuffer = XLSX.write(workbook, {
+				bookType: "xlsx",
+				type: "array",
+			});
+			const blob = new Blob([excelBuffer], {
+				type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+			});
+			saveAs(blob, `Report Pemeriksaan Gizi.xlsx`);
+		}
 		showAlertToast('success', 'Laporan pemeriksaan berhasil diunduh');
 		setIsLoadingDownload(false);
 	}
@@ -157,55 +199,90 @@ export default function ReportFilePage() {
   }, []);
 
   return (
-	<PageRoot>
-		<PageContentHeader title="Berkas Laporan" buttonText="Unduh Laporan" buttonAction={handleDownloadReport} buttonIconHidden />
-		<DataGrid
-			label="Data Pemeriksaan"
-			rows={inspections}
-			rowCount={inspections.length}
-			columns={columns}
-			pagination
-			sortingMode="client"
-			filterMode="client"
-			paginationMode="client"
-			disableRowSelectionOnClick
-			loading={isLoading}
-			showToolbar
-			sx={{
-				flex: 1,
-				[`& .${gridClasses.columnHeader}`]: {
-					backgroundColor: 'white', // putih untuk header
-				},
-				[`& .${gridClasses.row}`]: {
-					backgroundColor: 'rgba(255,255,255,0.5)', // full row abu terang
-				},
-				[`& .${gridClasses.columnHeader}, & .${gridClasses.cell}`]: {
-					outline: 'transparent',
-				},
-				[`& .${gridClasses.columnHeader}:focus-within, & .${gridClasses.cell}:focus-within`]:
-					{
-					outline: 'none',
+	<React.Fragment>
+		<PageRoot>
+			<PageContentHeader title="Berkas Laporan" buttonText="Unduh Laporan" buttonAction={()=>setOpen(true)} buttonIconHidden />
+			<DataGrid
+				label="Data Pemeriksaan"
+				rows={inspections}
+				rowCount={inspections.length}
+				columns={columns}
+				pagination
+				sortingMode="client"
+				filterMode="client"
+				paginationMode="client"
+				disableRowSelectionOnClick
+				loading={isLoading}
+				showToolbar
+				sx={{
+					flex: 1,
+					[`& .${gridClasses.columnHeader}`]: {
+						backgroundColor: 'white', // putih untuk header
 					},
-				[`& .${gridClasses.row}:hover`]: {
-					cursor: 'pointer',
-				},
-				[`& .${gridClasses.footerContainer}`]: {
-					height: "50px",
-					minHeight: "unset",
-					paddingY: 0.5,
-					backgroundColor: 'rgba(255,255,255,0.25)',
-				},
-			}}
-			slotProps={{
-				loadingOverlay: {
-					variant: 'circular-progress',
-					noRowsVariant: 'circular-progress',
-				},
-				baseIconButton: {
-					size: 'small',
-				},
-			}}
-		/>
-	</PageRoot>
+					[`& .${gridClasses.row}`]: {
+						backgroundColor: 'rgba(255,255,255,0.5)', // full row abu terang
+					},
+					[`& .${gridClasses.columnHeader}, & .${gridClasses.cell}`]: {
+						outline: 'transparent',
+					},
+					[`& .${gridClasses.columnHeader}:focus-within, & .${gridClasses.cell}:focus-within`]:
+						{
+						outline: 'none',
+						},
+					[`& .${gridClasses.row}:hover`]: {
+						cursor: 'pointer',
+					},
+					[`& .${gridClasses.footerContainer}`]: {
+						height: "50px",
+						minHeight: "unset",
+						paddingY: 0.5,
+						backgroundColor: 'rgba(255,255,255,0.25)',
+					},
+				}}
+				slotProps={{
+					loadingOverlay: {
+						variant: 'circular-progress',
+						noRowsVariant: 'circular-progress',
+					},
+					baseIconButton: {
+						size: 'small',
+					},
+				}}
+			/>
+		</PageRoot>
+		<Dialog open={open} fullScreen={fullScreen} onClose={()=>setOpen(false)} aria-labelledby="responsive-dialog-title">
+			<DialogTitle>
+				<Grid container sx={{ position: 'relative', marginTop: 2, marginBottom: 1 }} justifyContent="center" alignItems="center">
+				<Typography variant="h3" component="h3">
+					Unduh Laporan
+				</Typography>
+				<IconButton sx={{ position: 'absolute', right: 0, top: -12 }} color="inherit" onClick={()=>setOpen(false)} aria-label="close">
+					<CloseIcon />
+				</IconButton>
+				</Grid>
+			</DialogTitle>
+			<DialogContent sx={{ textAlign: 'center' }}>
+				<Grid container spacing={2}>
+					<Grid item xs={12} md={6}>
+						<Box sx={{ minWidth: 200, backgroundColor: "rgba(0,0,0,0.1)", border: "2px solid rgba(0,0,0,0.1)", padding: 2, borderRadius: 2, cursor:"pointer" }} onClick={()=>{
+							handleDownloadReport("pdf");
+							setOpen(false);
+						}}>
+							<Typography variant='h4'>PDF</Typography>
+						</Box>
+					</Grid>
+					<Grid item xs={12} md={6}>
+						<Box sx={{ minWidth: 200, backgroundColor: "rgba(0,0,0,0.1)", border: "2px solid rgba(0,0,0,0.1)", padding: 2, borderRadius: 2, cursor:"pointer" }} onClick={()=>{
+							handleDownloadReport("excel");
+							setOpen(false);
+						}}>
+							<Typography variant='h4'>Excel</Typography>
+						</Box>
+					</Grid>
+				</Grid>
+			</DialogContent>
+		</Dialog>
+	</React.Fragment>
   );
+
 }
